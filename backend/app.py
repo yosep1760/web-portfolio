@@ -1,10 +1,16 @@
 import os
+import sys
+
+# Tambahkan path folder saat ini agar Python tidak bingung mencari modul
+sys.path.append(os.path.join(os.path.dirname(__file__)))
+
 from flask import Flask, jsonify
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash
 
 # Import konfigurasi dan database
 from config import Config
-from models import db, Product
+from models import db, Product, User
 
 # Import Blueprints dari folder routes
 from routes.auth_routes import auth_bp
@@ -18,56 +24,57 @@ CORS(app)
 app.config.from_object(Config)
 
 # --- TRIK KHUSUS VERCEL ---
-# Vercel tidak bisa menyimpan file database di folder biasa (Read-Only).
-# Jadi kita akali dengan menyimpannya di folder sementara '/tmp/' milik server Vercel.
+# Database SQLite disimpan di folder '/tmp/' karena Vercel bersifat Read-Only
 if os.environ.get('VERCEL'):
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/database_toko.db'
 
-# Inisialisasi database dengan aplikasi Flask
+# Inisialisasi database
 db.init_app(app)
 
-# Mendaftarkan rute (Blueprints) yang sudah kita buat
+# Mendaftarkan rute
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(product_bp, url_prefix='/api/products')
 app.register_blueprint(cart_bp, url_prefix='/api/cart')
 
-# Membuat tabel database dan memasukkan produk otomatis jika masih kosong
+# Setup Database & Data Awal
 with app.app_context():
-    db.create_all() # Membuat tabel User, Product, dan Order
+    db.create_all() 
     
-    # Cek apakah tabel Product masih kosong
+    # 1. Cek Produk
     if not Product.query.first():
-        # Suntikkan 3 produk awal (Data Dummy)
         dummy_products = [
             Product(
                 name="Laptop Gaming ROG", 
-                description="Laptop super ngebut untuk gaming dan coding.", 
+                description="Laptop super ngebut untuk gaming.", 
                 price=25000000, 
                 stock=10, 
-                image_url="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=500&q=60"
+                image_url="https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=500"
             ),
             Product(
                 name="Keyboard Mechanical RGB", 
                 description="Nyaman untuk ngetik seharian.", 
                 price=850000, 
                 stock=25, 
-                image_url="https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=500&q=60"
-            ),
-            Product(
-                name="Mouse Wireless Logitech", 
-                description="Tanpa kabel, bebas ribet.", 
-                price=450000, 
-                stock=30, 
-                image_url="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=500&q=60"
+                image_url="https://images.unsplash.com/photo-1595225476474-87563907a212?w=500"
             )
         ]
         db.session.bulk_save_objects(dummy_products)
         db.session.commit()
 
-# Route untuk cek status server
+    # 2. Tambahkan User Dummy (Penting agar Anda bisa login!)
+    if not User.query.filter_by(email='test@gmail.com').first():
+        user_test = User(
+            username="UserTest",
+            email="test@gmail.com",
+            password=generate_password_hash("password123")
+        )
+        db.session.add(user_test)
+        db.session.commit()
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({"status": "online", "message": "Backend Toko Online siap!"})
 
+# Perbaikan kurung tutup di bagian ini
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
