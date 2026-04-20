@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - TokoKita</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1><a href="index.html" style="text-decoration: none; color: inherit;">TokoKita</a></h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="cart.html" class="active">Keranjang (<span id="cart-count">0</span>)</a></li>
+                <li><a href="login.html" id="login-btn">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="cart-section">
+            <h2>Keranjang Belanja Anda</h2>
+            
+            <div class="cart-layout">
+                <div class="cart-items-container" id="cart-items">
+                    <p class="empty-cart-msg">Keranjang Anda masih kosong. Yuk belanja!</p>
+                    </div>
+
+                <div class="cart-summary">
+                    <h3>Ringkasan Pesanan</h3>
+                    <div class="summary-details">
+                        <p>Total Harga:</p>
+                        <h3 id="cart-total">Rp 0</h3>
+                    </div>
+                    
+                    <button id="btn-checkout" class="btn-checkout">Checkout Sekarang</button>
+                    
+                    <div id="checkout-message" style="margin-top: 15px; text-align: center;"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 TokoKita. Dibuat untuk portofolio.</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/cart.js"></script> 
+    <script src="js/main.js"></script>
+
+</body>
+</html>
