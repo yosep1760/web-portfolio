@@ -1,0 +1,2082 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YumeGuild 夢ギルド | Agensi Isekai Digital</title>
+    
+    <!-- Google Fonts for Anime Aesthetic: M PLUS Rounded 1c for Japanese, Nunito for English/Indo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Righteous&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Anime Sunset / Twilight Palette
+                        yume: {
+                            dark: '#0d0a1b',      // Deep twilight space
+                            night: '#1a1835',     // Night sky
+                            purple: '#4a0e4e',    // Magic purple
+                            pink: '#ff7eb3',      // Sakura vibrant
+                            lightpink: '#ffb7c5', // Soft sakura
+                            cyan: '#00f2fe',      // Magic glow cyan
+                            gold: '#ffd700',      // Anime star gold
+                            crimson: '#dc143c',   // Damage/HP red
+                            mana: '#4169e1',      // MP blue
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        anime: ['"M PLUS Rounded 1c"', 'sans-serif'],
+                        title: ['Righteous', 'cursive'],
+                    },
+                    backgroundImage: {
+                        'sakura-gradient': 'linear-gradient(135deg, #ff7eb3 0%, #ff758c 100%)',
+                        'twilight-gradient': 'linear-gradient(to bottom, #0d0a1b 0%, #1a1835 50%, #4a0e4e 100%)',
+                        'magic-gradient': 'linear-gradient(45deg, #00f2fe 0%, #4facfe 100%)',
+                    },
+                    boxShadow: {
+                        'sakura': '0 0 20px rgba(255, 126, 179, 0.5)',
+                        'magic': '0 0 25px rgba(0, 242, 254, 0.6)',
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- =========================================
+         MASSIVE CUSTOM CSS ENGINE
+         Over 800+ lines of custom styling for 
+         animations, magic circles, VN UI, and more.
+         ========================================= -->
+    <style>
+        :root {
+            --bg-base: #0d0a1b;
+            --text-main: #f8f9fa;
+            --primary-glow: #ff7eb3;
+            --secondary-glow: #00f2fe;
+            --magic-circle-color: rgba(255, 126, 179, 0.3);
+            --vn-box-bg: rgba(26, 24, 53, 0.85);
+        }
+
+        /* RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Anime Sword Cursor Replacement */
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            overflow-x: hidden;
+            font-family: 'Nunito', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 126, 179, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 242, 254, 0.05) 0%, transparent 40%);
+        }
+
+        ::selection {
+            background: rgba(255, 126, 179, 0.4);
+            color: #fff;
+            text-shadow: 0 0 5px #fff;
+        }
+
+        /* ANIME SWORD / MAGIC WAND CURSOR */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+        
+        #custom-cursor::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow);
+        }
+
+        #custom-cursor::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--secondary-glow);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            animation: rotateCursor 4s linear infinite;
+        }
+
+        body.hover-active #custom-cursor::after {
+            width: 60px;
+            height: 60px;
+            border-color: var(--primary-glow);
+            border-style: dashed;
+            opacity: 1;
+            animation: rotateCursor 2s linear infinite reverse;
+        }
+
+        /* CUSTOM SCROLLBAR (Katana Style) */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0a1b;
+            border-left: 1px solid rgba(255, 126, 179, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ff7eb3, #4a0e4e);
+            border-radius: 10px;
+            border: 2px solid #0d0a1b;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #00f2fe, #ff7eb3);
+        }
+
+        /* =========================================
+           JAPANESE RUBY TEXT STYLING
+           ========================================= */
+        ruby {
+            ruby-position: over;
+            ruby-align: center;
+        }
+        rt {
+            font-size: 0.4em;
+            color: var(--primary-glow);
+            letter-spacing: 1px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            opacity: 0.8;
+            transform: translateY(5px);
+        }
+
+        /* =========================================
+           MAGIC CIRCLE PRELOADER
+           ========================================= */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: #05030a;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+            overflow: hidden;
+        }
+
+        .magic-circle-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .magic-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            box-shadow: 0 0 15px transparent;
+        }
+
+        .ring-1 {
+            width: 100%;
+            height: 100%;
+            border-top: 2px solid var(--primary-glow);
+            border-bottom: 2px solid var(--primary-glow);
+            animation: spinRing1 4s linear infinite;
+            box-shadow: inset 0 0 20px rgba(255, 126, 179, 0.2);
+        }
+
+        .ring-2 {
+            width: 80%;
+            height: 80%;
+            border-left: 2px solid var(--secondary-glow);
+            border-right: 2px solid var(--secondary-glow);
+            animation: spinRing2 3s linear infinite reverse;
+        }
+
+        .ring-3 {
+            width: 60%;
+            height: 60%;
+            border: 1px dashed #fff;
+            animation: spinRing1 8s linear infinite;
+        }
+
+        .preloader-core {
+            position: absolute;
+            width: 40%;
+            height: 40%;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulseCore 2s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .preloader-text {
+            margin-top: 40px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 8px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--secondary-glow);
+            animation: floatText 3s ease-in-out infinite;
+        }
+        
+        .loading-bar-container {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary-glow), var(--primary-glow));
+            box-shadow: 0 0 15px var(--primary-glow);
+            transition: width 0.1s ease;
+        }
+
+        /* =========================================
+           KEYFRAMES MASIF
+           ========================================= */
+        @keyframes rotateCursor {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes spinRing1 {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.05); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes spinRing2 {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(-180deg) scale(0.95); }
+            100% { transform: rotate(-360deg) scale(1); }
+        }
+
+        @keyframes pulseCore {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; filter: hue-rotate(0deg); }
+            50% { transform: scale(1.2); opacity: 1; filter: hue-rotate(45deg); }
+        }
+
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); text-shadow: 0 0 10px var(--primary-glow); }
+            50% { transform: translateY(-10px); text-shadow: 0 0 20px var(--secondary-glow), 0 0 40px var(--primary-glow); }
+        }
+
+        @keyframes floatAnime {
+            0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) translateX(10px) rotate(2deg); }
+            66% { transform: translateY(10px) translateX(-5px) rotate(-1deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(-5%); opacity: 0.6; }
+            50% { transform: translateX(5%); opacity: 0.8; }
+            100% { transform: translateX(-5%); opacity: 0.6; }
+        }
+
+        @keyframes shootingStar {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateX(-1000px) translateY(1000px) rotate(-45deg); opacity: 0; }
+        }
+
+        @keyframes shineSweep {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
+        }
+
+        @keyframes animeBlink {
+            0%, 96%, 98% { transform: scaleY(1); }
+            97%, 99% { transform: scaleY(0.1); }
+            100% { transform: scaleY(1); }
+        }
+
+        @keyframes magicCircleDraw {
+            from { stroke-dashoffset: 2000; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes magicCircleRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes floatingOrb {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            33% { transform: translate(30px, -50px) scale(1.2); opacity: 0.8; }
+            66% { transform: translate(-20px, 20px) scale(0.9); opacity: 0.6; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+        }
+
+        /* =========================================
+           SCROLL REVEAL (ISEKAI SUMMONING EFFECT)
+           ========================================= */
+        .summon-reveal {
+            opacity: 0;
+            transform: translateY(60px) scale(0.95);
+            filter: blur(10px) drop-shadow(0 0 0 var(--primary-glow));
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        
+        .summon-reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0px) drop-shadow(0 0 20px transparent);
+        }
+
+        .summon-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            filter: blur(5px);
+            transition: all 1s ease-out;
+        }
+        
+        .summon-left.active {
+            opacity: 1;
+            transform: translateX(0);
+            filter: blur(0);
+        }
+
+        .summon-right {
+            opacity: 0;
+            transform: translateX(100px);
+            filter: blur(5px);
+            transition: all 1s ease-out;
+        }
+        
+        .summon-right.active {
+            opacity: 1;
+            transform: translateX(0);
+            filter: blur(0);
+        }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-500 { transition-delay: 500ms; }
+        .delay-600 { transition-delay: 600ms; }
+
+        /* =========================================
+           UI COMPONENTS: GLASSMORPHISM & NEON
+           ========================================= */
+        
+        /* Anime Navbar */
+        #navbar {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(0px);
+            background: linear-gradient(180deg, rgba(13, 10, 27, 0.8) 0%, transparent 100%);
+            border-bottom: 1px solid transparent;
+        }
+        
+        #navbar.scrolled {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            background: rgba(13, 10, 27, 0.7);
+            border-bottom: 1px solid rgba(255, 126, 179, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 126, 179, 0.1);
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+
+        .nav-item {
+            position: relative;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #a1a1aa;
+            transition: all 0.3s;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-item::before {
+            content: attr(data-text);
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 0%;
+            color: var(--primary-glow);
+            overflow: hidden;
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            white-space: nowrap;
+        }
+
+        .nav-item:hover::before, .nav-item.active::before {
+            width: 100%;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-glow), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .nav-item:hover::after, .nav-item.active::after {
+            transform: translateX(0);
+        }
+
+        /* Isekai Buttons */
+        .btn-isekai {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 40px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #fff;
+            background: rgba(255, 126, 179, 0.1);
+            border: 1px solid rgba(255, 126, 179, 0.4);
+            border-radius: 8px; /* Slightly sharp for fantasy feel */
+            overflow: hidden;
+            transition: all 0.4s ease;
+            z-index: 1;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        
+        .btn-isekai::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--primary-glow) 0%, #dc143c 100%);
+            z-index: -2;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .btn-isekai::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg);
+            z-index: -1;
+            animation: shineSweep 4s infinite cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .btn-isekai:hover {
+            border-color: transparent;
+            box-shadow: 0 10px 25px rgba(255, 126, 179, 0.5), inset 0 0 10px rgba(255,255,255,0.5);
+            transform: translateY(-3px) scale(1.02);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .btn-isekai:hover::before {
+            opacity: 1;
+        }
+
+        .btn-magic {
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .btn-magic:hover {
+            box-shadow: 0 8px 30px rgba(0, 242, 254, 0.7);
+            transform: translateY(-2px);
+        }
+
+        /* TEXT GRADIENTS */
+        .text-anime-gradient {
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow), #ffd700);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientMove 4s ease infinite;
+        }
+
+        /* =========================================
+           BACKGROUND ENVIRONMENTS (HERO)
+           ========================================= */
+        #anime-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; /* Behind everything */
+            pointer-events: none;
+        }
+
+        .sky-background {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-base);
+            background: linear-gradient(180deg, #07051a 0%, #1a0b2e 50%, #2d113a 100%);
+            z-index: -4;
+        }
+
+        /* Shooting Stars Generation */
+        .star-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -3;
+            overflow: hidden;
+        }
+        
+        .shooting-star {
+            position: absolute;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, #fff, transparent);
+            box-shadow: 0 0 10px #fff, 0 0 20px var(--secondary-glow);
+            opacity: 0;
+        }
+
+        .star-1 { top: 10%; left: 80%; animation: shootingStar 6s linear infinite; animation-delay: 1s; }
+        .star-2 { top: 30%; left: 90%; animation: shootingStar 8s linear infinite; animation-delay: 4s; }
+        .star-3 { top: 5%; left: 50%; animation: shootingStar 5s linear infinite; animation-delay: 7s; }
+
+        /* Clouds Parallax */
+        .cloud-layer {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 50%;
+            z-index: -2;
+            background-size: cover;
+            background-position: bottom center;
+            background-repeat: repeat-x;
+            opacity: 0.4;
+            mix-blend-mode: screen;
+        }
+        
+        /* SVG Data URI for Anime Clouds (Massive detail) */
+        .cloud-1 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffb7c5' fill-opacity='0.2' d='M0,160L48,176C96,192,192,224,288,218.7C384,213,480,171,576,170.7C672,171,768,213,864,229.3C960,245,1056,235,1152,208C1248,181,1344,139,1392,117.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            animation: floatCloud 25s ease-in-out infinite alternate;
+        }
+        .cloud-2 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234a0e4e' fill-opacity='0.3' d='M0,256L60,245.3C120,235,240,213,360,213.3C480,213,600,235,720,234.7C840,235,960,213,1080,186.7C1200,160,1320,128,1380,112L1440,96L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            animation: floatCloud 35s ease-in-out infinite alternate-reverse;
+            bottom: -20px;
+        }
+
+        /* Giant Decorative Magic Circle behind Hero */
+        .hero-magic-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            transform: translate(-50%, -50%) rotateX(60deg);
+            transform-style: preserve-3d;
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           VISUAL NOVEL DIALOGUE BOX (ABOUT SECTION)
+           ========================================= */
+        .vn-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border-radius: 12px;
+            background: var(--vn-box-bg);
+            border: 2px solid rgba(255, 126, 179, 0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 0 30px rgba(74, 14, 78, 0.5);
+            backdrop-filter: blur(20px);
+            padding: 30px;
+            padding-top: 45px;
+            min-height: 250px;
+        }
+
+        .vn-name-plate {
+            position: absolute;
+            top: -20px;
+            left: 30px;
+            background: linear-gradient(135deg, #4a0e4e, #dc143c);
+            padding: 8px 25px;
+            border-radius: 5px;
+            border: 2px solid #ff7eb3;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .vn-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .vn-next-indicator {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid var(--primary-glow);
+            animation: bounceNext 1s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes bounceNext {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        /* Mascot Container in About */
+        .mascot-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            filter: drop-shadow(0 0 20px rgba(255, 126, 179, 0.3));
+            animation: floatAnime 6s ease-in-out infinite;
+        }
+
+        /* Pure CSS Mascot Construction (Highly Detailed) */
+        .mascot-face {
+            position: relative;
+            width: 180px;
+            height: 200px;
+            background: #ffe0d2;
+            border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+            box-shadow: inset -10px -20px 20px rgba(200, 100, 100, 0.2);
+            z-index: 10;
+        }
+        
+        .mascot-hair-back {
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            width: 240px;
+            height: 280px;
+            background: linear-gradient(to bottom, #ffb7c5, #ff7eb3);
+            border-radius: 50% 50% 10% 10%;
+            z-index: 5;
+        }
+
+        .mascot-hair-front {
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            z-index: 15;
+        }
+        
+        .bang-1 { position: absolute; top:0; left: 10px; width: 60px; height: 100px; background: #ffb7c5; border-radius: 0 0 50px 0; transform: rotate(15deg); }
+        .bang-2 { position: absolute; top:0; left: 60px; width: 60px; height: 110px; background: #ff7eb3; border-radius: 0 0 30px 30px; z-index: 16; }
+        .bang-3 { position: absolute; top:0; right: 10px; width: 60px; height: 100px; background: #ffb7c5; border-radius: 0 0 0 50px; transform: rotate(-15deg); }
+
+        .mascot-eye {
+            position: absolute;
+            top: 90px;
+            width: 45px;
+            height: 55px;
+            background: #fff;
+            border-radius: 50%;
+            border-top: 4px solid #333;
+            overflow: hidden;
+            animation: animeBlink 5s infinite;
+        }
+        .mascot-eye.left { left: 25px; }
+        .mascot-eye.right { right: 25px; }
+        
+        .mascot-iris {
+            position: absolute;
+            bottom: 5px;
+            left: 5px;
+            width: 35px;
+            height: 45px;
+            background: radial-gradient(circle at 50% 30%, #00f2fe, #4facfe, #0d0a1b);
+            border-radius: 50%;
+        }
+        
+        .mascot-pupil {
+            position: absolute;
+            top: 15px;
+            left: 10px;
+            width: 15px;
+            height: 20px;
+            background: #000;
+            border-radius: 50%;
+        }
+        
+        .mascot-highlight-1 {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 15px;
+            height: 15px;
+            background: #fff;
+            border-radius: 50%;
+        }
+        .mascot-highlight-2 {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .mascot-blush {
+            position: absolute;
+            top: 130px;
+            width: 35px;
+            height: 15px;
+            background: #ff7eb3;
+            border-radius: 50%;
+            filter: blur(5px);
+            opacity: 0.6;
+        }
+        .mascot-blush.left { left: 15px; }
+        .mascot-blush.right { right: 15px; }
+
+        .mascot-mouth {
+            position: absolute;
+            top: 155px;
+            left: 80px;
+            width: 20px;
+            height: 10px;
+            border-bottom: 3px solid #cc6666;
+            border-radius: 0 0 20px 20px;
+        }
+
+        /* =========================================
+           SKILL TREE CARDS (SERVICES)
+           ========================================= */
+        .skill-card {
+            background: rgba(26, 24, 53, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 126, 179, 0.1);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255, 126, 179, 0.3), transparent);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 22px;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--primary-glow);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(255, 126, 179, 0.2);
+            background: rgba(42, 20, 60, 0.8);
+        }
+
+        .skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            background: rgba(13, 10, 27, 0.8);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--primary-glow);
+            position: relative;
+            transform: rotate(45deg);
+            overflow: hidden;
+        }
+        
+        .skill-icon-wrapper > svg {
+            transform: rotate(-45deg); /* Counter rotate icon */
+            width: 35px;
+            height: 35px;
+            color: var(--primary-glow);
+            filter: drop-shadow(0 0 5px var(--primary-glow));
+        }
+
+        /* SVG Magic Drawing Effect on Hover */
+        .skill-card .magic-line {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .skill-card:hover .magic-line {
+            stroke-dashoffset: 0;
+            animation: magicCircleDraw 1.5s forwards;
+        }
+
+        /* =========================================
+           PORTFOLIO (MEMORY SHARDS)
+           ========================================= */
+        .memory-shard {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+
+        .memory-shard:nth-child(even) {
+            clip-path: polygon(0 0, 90% 0, 100% 100%, 10% 100%);
+        }
+
+        .shard-img {
+            width: 120%; /* Extra width for clip-path compensation */
+            height: 100%;
+            margin-left: -10%;
+            background-size: cover;
+            background-position: center;
+            transition: transform 1s ease, filter 0.5s ease;
+            filter: grayscale(40%) sepia(20%) hue-rotate(280deg); /* Twilight filter */
+        }
+
+        .shard-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(13, 10, 27, 0.95) 0%, rgba(74, 14, 78, 0.5) 50%, transparent 100%);
+            opacity: 0.8;
+            transition: opacity 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px;
+        }
+
+        .memory-shard:hover {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.4);
+        }
+
+        .memory-shard:hover .shard-img {
+            transform: scale(1.1);
+            filter: grayscale(0%) sepia(0%) hue-rotate(0deg);
+        }
+
+        .memory-shard:hover .shard-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(13, 10, 27, 0.95) 0%, transparent 80%);
+        }
+
+        /* Abstract Shard Backgrounds (No external images) */
+        .bg-shard-1 {
+            background: linear-gradient(45deg, #1a0b2e, #4facfe);
+            position: relative;
+        }
+        .bg-shard-1::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
+        }
+        
+        .bg-shard-2 {
+            background: radial-gradient(circle at center, #ff7eb3, #4a0e4e);
+            position: relative;
+        }
+        .bg-shard-2::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.2) 2px, transparent 2.5px);
+            background-size: 30px 30px;
+        }
+
+        .bg-shard-3 {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            position: relative;
+            overflow: hidden;
+        }
+        .bg-shard-3::before {
+            content: ''; position: absolute; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--secondary-glow), transparent 30%);
+            animation: spinRing1 10s linear infinite;
+            top: -50%; left: -50%;
+            opacity: 0.3;
+        }
+
+        /* =========================================
+           RPG STATS & CHARACTER PROFILES (TEAM)
+           ========================================= */
+        .char-card {
+            background: rgba(13, 10, 27, 0.8);
+            border: 2px solid #2d113a;
+            border-radius: 8px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .char-card:hover {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 20px rgba(255, 126, 179, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .char-class-badge {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: #dc143c;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+            box-shadow: 0 0 10px #dc143c;
+        }
+
+        /* HP/MP Bars */
+        .stat-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.5);
+        }
+        
+        .stat-bar-fill {
+            height: 100%;
+            width: 0%; /* Set via JS/inline */
+            border-radius: 4px;
+            position: relative;
+        }
+        .stat-bar-fill::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%; background: rgba(255,255,255,0.3);
+        }
+
+        .hp-fill { background: linear-gradient(90deg, #8b0000, #dc143c); box-shadow: 0 0 8px #dc143c; }
+        .mp-fill { background: linear-gradient(90deg, #00008b, #4169e1); box-shadow: 0 0 8px #4169e1; }
+        .exp-fill { background: linear-gradient(90deg, #b8860b, #ffd700); box-shadow: 0 0 8px #ffd700; }
+
+        /* =========================================
+           SUMMONING CIRCLE FORM (CONTACT)
+           ========================================= */
+        .summon-form-wrapper {
+            position: relative;
+            padding: 50px;
+            background: rgba(26, 24, 53, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 40px rgba(0, 242, 254, 0.1);
+        }
+
+        .summon-form-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 800px; height: 800px;
+            transform: translate(-50%, -50%);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Ccircle cx='250' cy='250' r='240' fill='none' stroke='%2300f2fe' stroke-width='2' stroke-opacity='0.2' stroke-dasharray='10 5'/%3E%3Ccircle cx='250' cy='250' r='200' fill='none' stroke='%2300f2fe' stroke-width='1' stroke-opacity='0.3'/%3E%3Cpolygon points='250,50 423,150 423,350 250,450 77,350 77,150' fill='none' stroke='%23ff7eb3' stroke-width='2' stroke-opacity='0.2'/%3E%3Cpolygon points='250,10 457,129 378,370 122,370 43,129' fill='none' stroke='%2300f2fe' stroke-width='1' stroke-opacity='0.2'/%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: -1;
+            animation: magicCircleRotate 60s linear infinite;
+            opacity: 0.5;
+        }
+
+        .anime-input {
+            width: 100%;
+            background: rgba(13, 10, 27, 0.8);
+            border: 2px solid rgba(255, 126, 179, 0.3);
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .anime-input:focus {
+            border-color: var(--secondary-glow);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+            background: rgba(26, 24, 53, 0.9);
+        }
+
+        .anime-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+            font-family: 'M PLUS Rounded 1c', sans-serif;
+        }
+
+        /* Floating elements for form */
+        .form-floater {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--secondary-glow) 0%, transparent 70%);
+            animation: floatingOrb 10s infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body class="antialiased selection:bg-pink-500/30 selection:text-white">
+
+    <!-- =========================================
+         PRELOADER : MAGIC SUMMONING CIRCLE
+         ========================================= -->
+    <div id="preloader">
+        <div class="magic-circle-container">
+            <!-- Complex SVG Magic Circle Inline -->
+            <svg class="absolute w-[350px] h-[350px] animate-[spin_20s_linear_infinite]" viewBox="0 0 500 500">
+                <circle cx="250" cy="250" r="240" fill="none" stroke="#ff7eb3" stroke-width="2" stroke-dasharray="5 15"/>
+                <circle cx="250" cy="250" r="230" fill="none" stroke="#00f2fe" stroke-width="1" opacity="0.5"/>
+                <path d="M250 10 L457 129 L378 370 L122 370 L43 129 Z" fill="none" stroke="#ff7eb3" stroke-width="1.5" opacity="0.7"/>
+                <path d="M250 490 L43 371 L122 130 L378 130 L457 371 Z" fill="none" stroke="#00f2fe" stroke-width="1.5" opacity="0.7"/>
+                <circle cx="250" cy="250" r="150" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="50 20" class="animate-[spin_10s_linear_infinite_reverse] origin-center"/>
+                <!-- Japanese Runes around circle -->
+                <g fill="#ff7eb3" font-family="'M PLUS Rounded 1c'" font-size="20" font-weight="bold" opacity="0.8">
+                    <text x="240" y="40">光</text><text x="440" y="260">魔</text>
+                    <text x="240" y="480">闇</text><text x="40" y="260">力</text>
+                </g>
+            </svg>
+            
+            <div class="magic-ring ring-1"></div>
+            <div class="magic-ring ring-2"></div>
+            <div class="magic-ring ring-3"></div>
+            <div class="preloader-core">
+                <svg class="w-12 h-12 text-white animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+        </div>
+        <div class="preloader-text">MEMUAT DUNIA</div>
+        <div class="loading-bar-container">
+            <div class="loading-bar" id="progress-bar"></div>
+        </div>
+        <div class="text-pink-400 text-xs mt-3 font-anime font-bold tracking-widest" id="progress-text">KONEKSI SISTEM: 0%</div>
+    </div>
+
+    <!-- Custom Sword Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- =========================================
+         NAVIGATION (GUILD MENU)
+         ========================================= -->
+    <header id="navbar" class="fixed top-0 left-0 w-full z-50 py-4 lg:py-6">
+        <div class="container mx-auto px-6 md:px-12 flex justify-between items-center">
+            
+            <!-- Logo Anime Style -->
+            <a href="#" class="flex items-center gap-3 hover-active z-50 relative group">
+                <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-purple-800 flex items-center justify-center shadow-[0_0_15px_rgba(255,126,179,0.5)] overflow-hidden">
+                    <div class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                    <!-- Simple star icon -->
+                    <svg class="w-6 h-6 text-white transform group-hover:rotate-180 transition-transform duration-700" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <div class="flex flex-col leading-none">
+                    <span class="text-2xl font-title tracking-wider text-white drop-shadow-[0_0_5px_rgba(255,126,179,0.8)]">Yume<span class="text-pink-400">Guild</span></span>
+                    <span class="text-[0.6rem] font-anime text-cyan-400 tracking-[0.2em] font-bold">夢ギルド・イセカイ</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 bg-yume-dark/50 px-8 py-3 rounded-full border border-pink-500/20 backdrop-blur-md shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                <a href="#home" class="nav-item hover-active text-sm" data-text="BERANDA">Beranda</a>
+                <a href="#story" class="nav-item hover-active text-sm" data-text="CERITA KAMI">Cerita Kami</a>
+                <a href="#skills" class="nav-item hover-active text-sm" data-text="KEAHLIAN">Keahlian</a>
+                <a href="#quests" class="nav-item hover-active text-sm" data-text="ARSIP MISI">Arsip Misi</a>
+                <a href="#summon" class="nav-item hover-active text-sm" data-text="PANGGILAN">Panggilan</a>
+            </nav>
+
+            <!-- CTA Button -->
+            <div class="hidden md:block">
+                <a href="#summon" class="btn-isekai text-xs hover-active">
+                    <span class="relative z-10 flex items-center gap-2">
+                        <span>Gabung Guild</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle (Hamburger to Cross) -->
+            <button class="md:hidden text-pink-400 hover-active focus:outline-none z-50" id="mobile-menu-btn">
+                <svg class="w-8 h-8 transition-transform duration-300" id="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Fullscreen Menu -->
+        <div id="mobile-menu" class="fixed inset-0 bg-[#0d0a1b]/98 backdrop-blur-2xl z-40 hidden flex-col items-center justify-center gap-10 opacity-0 transition-opacity duration-500">
+            <!-- Decorative giant kanji -->
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[300px] font-anime font-black text-white/5 pointer-events-none">夢</div>
+            
+            <a href="#home" class="mobile-link text-3xl font-title text-white hover:text-pink-400 transition-colors drop-shadow-[0_0_10px_rgba(255,126,179,0.5)]">Beranda</a>
+            <a href="#story" class="mobile-link text-3xl font-title text-white hover:text-pink-400 transition-colors drop-shadow-[0_0_10px_rgba(255,126,179,0.5)]">Cerita</a>
+            <a href="#skills" class="mobile-link text-3xl font-title text-white hover:text-pink-400 transition-colors drop-shadow-[0_0_10px_rgba(255,126,179,0.5)]">Keahlian</a>
+            <a href="#quests" class="mobile-link text-3xl font-title text-white hover:text-pink-400 transition-colors drop-shadow-[0_0_10px_rgba(255,126,179,0.5)]">Arsip</a>
+            <a href="#summon" class="mobile-link text-3xl font-title text-white hover:text-cyan-400 transition-colors drop-shadow-[0_0_10px_rgba(0,242,254,0.5)] mt-4">Hubungi Kami</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- =========================================
+             HERO SECTION (MASSIVE CANVAS ENGINE)
+             ========================================= -->
+        <section id="home" class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+            <!-- Sky Gradient & Stars -->
+            <div class="sky-background"></div>
+            <div class="star-container">
+                <div class="shooting-star star-1"></div>
+                <div class="shooting-star star-2"></div>
+                <div class="shooting-star star-3"></div>
+            </div>
+
+            <!-- Parallax Clouds Background -->
+            <div class="cloud-layer cloud-1"></div>
+            <div class="cloud-layer cloud-2"></div>
+
+            <!-- Massive Background Magic Circle -->
+            <div class="hero-magic-circle">
+                <svg viewBox="0 0 1000 1000" class="w-full h-full animate-[spin_100s_linear_infinite]">
+                    <circle cx="500" cy="500" r="480" fill="none" stroke="#ff7eb3" stroke-width="2"/>
+                    <circle cx="500" cy="500" r="450" fill="none" stroke="#00f2fe" stroke-width="4" stroke-dasharray="10 30"/>
+                    <polygon points="500,50 889,275 889,725 500,950 111,725 111,275" fill="none" stroke="#ff7eb3" stroke-width="2"/>
+                    <polygon points="500,100 846,300 846,700 500,900 154,700 154,300" fill="none" stroke="#00f2fe" stroke-width="1"/>
+                </svg>
+            </div>
+
+            <!-- Interactive Sakura Physics Canvas -->
+            <canvas id="anime-canvas"></canvas>
+
+            <!-- Hero Content -->
+            <div class="container mx-auto px-6 relative z-10 text-center flex flex-col items-center">
+                <!-- System notification style badge -->
+                <div class="summon-reveal delay-100 mb-6 flex items-center gap-3 bg-yume-dark/60 border border-cyan-500/30 px-5 py-2 rounded-full backdrop-blur-sm shadow-[0_0_15px_rgba(0,242,254,0.2)]">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                    </span>
+                    <span class="text-xs font-anime text-cyan-200 tracking-[0.15em] font-bold">SISTEM: REALITAS BARU DITEMUKAN</span>
+                </div>
+                
+                <!-- Main Typography with Japanese Ruby -->
+                <h1 class="text-6xl md:text-8xl lg:text-[7rem] font-title font-black leading-tight mb-4 summon-reveal delay-200 drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+                    <span class="text-white">BANGUN</span> <br class="md:hidden">
+                    <ruby>
+                        <span class="text-anime-gradient">DUNIAMU</span>
+                        <rt>セカイ</rt>
+                    </ruby>
+                </h1>
+                
+                <h2 class="text-xl md:text-3xl font-anime font-bold text-pink-200 mb-8 max-w-3xl summon-reveal delay-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    Agensi digital interdimensi yang merajut <span class="text-cyan-400">kode</span> menjadi <span class="text-pink-400">sihir</span> visual.
+                </h2>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-6 mt-6 summon-reveal delay-400">
+                    <a href="#skills" class="btn-isekai hover-active">
+                        <span class="relative z-10 text-sm md:text-base">Mulai Petualangan</span>
+                    </a>
+                    <a href="#story" class="relative inline-flex items-center justify-center px-8 py-4 font-anime font-bold text-white transition-all duration-200 bg-transparent border-2 border-white/20 rounded-lg hover:bg-white/10 hover:border-white/50 backdrop-blur-sm hover-active">
+                        Baca Lore
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    </a>
+                </div>
+
+                <!-- Scroll down indicator (Anime arrow style) -->
+                <div class="absolute bottom-[-100px] flex flex-col items-center animate-bounce opacity-70 hover-active">
+                    <span class="text-[0.6rem] font-anime tracking-[0.3em] text-white/50 uppercase mb-2">Scroll</span>
+                    <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             STORY SECTION (VISUAL NOVEL STYLE UI)
+             ========================================= -->
+        <section id="story" class="py-24 relative z-10 bg-yume-dark border-t-2 border-pink-500/20 overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--twilight-gradient),_transparent_50%)] opacity-30 pointer-events-none"></div>
+            
+            <div class="container mx-auto px-6 md:px-12 relative">
+                
+                <div class="text-center mb-16 summon-reveal">
+                    <div class="inline-block px-4 py-1 rounded-full border border-pink-500/30 bg-pink-500/10 mb-3">
+                        <span class="text-pink-400 font-anime text-xs font-bold tracking-[0.2em]">エピソード 01</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-white mb-4">Lore <span class="text-pink-400">Guild</span></h2>
+                </div>
+
+                <div class="flex flex-col lg:flex-row items-end gap-10">
+                    
+                    <!-- Left: CSS Character Mascot -->
+                    <div class="w-full lg:w-1/3 mascot-container summon-left delay-200">
+                        <div class="mascot-face">
+                            <div class="mascot-hair-back"></div>
+                            <div class="mascot-hair-front">
+                                <div class="bang-1"></div>
+                                <div class="bang-2"></div>
+                                <div class="bang-3"></div>
+                            </div>
+                            <div class="mascot-eye left">
+                                <div class="mascot-iris"></div>
+                                <div class="mascot-pupil"></div>
+                                <div class="mascot-highlight-1"></div>
+                                <div class="mascot-highlight-2"></div>
+                            </div>
+                            <div class="mascot-eye right">
+                                <div class="mascot-iris"></div>
+                                <div class="mascot-pupil"></div>
+                                <div class="mascot-highlight-1"></div>
+                                <div class="mascot-highlight-2"></div>
+                            </div>
+                            <div class="mascot-blush left"></div>
+                            <div class="mascot-blush right"></div>
+                            <div class="mascot-mouth"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Visual Novel Textbox -->
+                    <div class="w-full lg:w-2/3 pb-10 summon-right delay-400">
+                        <div class="vn-container hover-active" id="vn-box">
+                            <div class="vn-name-plate shadow-[0_0_10px_rgba(255,126,179,0.5)]">Yumi (Sistem AI)</div>
+                            <div class="vn-text" id="vn-text-content">
+                                <!-- Text injected via JS typewriter -->
+                            </div>
+                            <div class="vn-next-indicator"></div>
+                        </div>
+                        
+                        <!-- Mini Stats below VN box -->
+                        <div class="grid grid-cols-3 gap-4 mt-8">
+                            <div class="bg-white/5 border border-white/10 rounded-lg p-4 text-center backdrop-blur-sm">
+                                <div class="text-3xl font-title text-cyan-400 stat-number" data-target="999">0</div>
+                                <div class="text-[0.65rem] text-gray-400 font-anime tracking-widest uppercase mt-1">Level Desain</div>
+                            </div>
+                            <div class="bg-white/5 border border-white/10 rounded-lg p-4 text-center backdrop-blur-sm">
+                                <div class="text-3xl font-title text-pink-400 stat-number" data-target="100">0</div>
+                                <div class="text-[0.65rem] text-gray-400 font-anime tracking-widest uppercase mt-1">Misi Selesai (%)</div>
+                            </div>
+                            <div class="bg-white/5 border border-white/10 rounded-lg p-4 text-center backdrop-blur-sm">
+                                <div class="text-3xl font-title text-gold stat-number" data-target="24">0</div>
+                                <div class="text-[0.65rem] text-gray-400 font-anime tracking-widest uppercase mt-1">Mana/Hari (Jam)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             SKILLS SECTION (RPG SKILL TREE STYLE)
+             ========================================= -->
+        <section id="skills" class="py-24 relative z-10 bg-[#0a0815]">
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="text-center mb-20 summon-reveal">
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-white mb-4">Pohon <span class="text-cyan-400">Keahlian</span></h2>
+                    <p class="text-gray-400 font-anime">Pilih kelas yang tepat untuk menaklukkan algoritma dunia digital.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    
+                    <!-- Skill 1: UI/UX (Illusion Magic) -->
+                    <div class="skill-card hover-active summon-reveal delay-100">
+                        <div class="skill-icon-wrapper shadow-[0_0_15px_rgba(255,126,179,0.3)] border-pink-500/50">
+                            <!-- SVG Eye / Illusion Motif -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#ff7eb3" stroke-width="1.5">
+                                <path class="magic-line" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle class="magic-line" cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-title text-white mb-3">Sihir Ilusi (UI/UX)</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed font-anime mb-6">Menciptakan antarmuka yang memanipulasi persepsi visual pengguna, memberikan pengalaman imersif yang tak tertandingi.</p>
+                        
+                        <!-- RPG Stat bars -->
+                        <div class="space-y-3 mt-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Estetika</span><span>S-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill hp-fill" style="width: 95%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Interaktivitas</span><span>A-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill mp-fill" style="width: 85%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 2: Frontend (Elemental WebGL) -->
+                    <div class="skill-card hover-active summon-reveal delay-300">
+                        <div class="skill-icon-wrapper shadow-[0_0_15px_rgba(0,242,254,0.3)] border-cyan-500/50" style="background: rgba(13, 10, 27, 0.9);">
+                            <!-- SVG Code/Hex Motif -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="1.5">
+                                <polygon class="magic-line" points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon>
+                                <polyline class="magic-line" points="12 22 12 12"></polyline>
+                                <polyline class="magic-line" points="22 8.5 12 12 2 8.5"></polyline>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-title text-white mb-3">Kriya Ruang (Frontend/WebGL)</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed font-anime mb-6">Membangun dimensi 3D langsung di peramban pengguna. Mengendalikan elemen partikel, shader, dan fisika dunia maya.</p>
+                        
+                        <div class="space-y-3 mt-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Performa</span><span>SS-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill exp-fill" style="width: 98%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Kompleksitas</span><span>S-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill mp-fill" style="width: 90%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 3: Backend (Core Database) -->
+                    <div class="skill-card hover-active summon-reveal delay-500">
+                        <div class="skill-icon-wrapper shadow-[0_0_15px_rgba(255,215,0,0.3)] border-yellow-500/50">
+                            <!-- SVG Database/Core Motif -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="1.5">
+                                <ellipse class="magic-line" cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path class="magic-line" d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                <path class="magic-line" d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-title text-white mb-3">Inti Server (Backend & API)</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed font-anime mb-6">Menempa arsitektur tak terlihat yang menopang seluruh realitas digital. Mengamankan data dengan segel enkripsi tingkat tinggi.</p>
+                        
+                        <div class="space-y-3 mt-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Keamanan</span><span>SS-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill hp-fill" style="width: 100%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-gray-400 font-anime font-bold"><span>Skalabilitas</span><span>A-Rank</span></div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill exp-fill" style="width: 80%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             PORTFOLIO (ARSIP MISI / MEMORY SHARDS)
+             ========================================= -->
+        <section id="quests" class="py-24 relative z-10 bg-yume-dark border-y border-white/5">
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16">
+                    <div class="max-w-2xl summon-reveal">
+                        <h2 class="text-4xl md:text-5xl font-title font-bold text-white mb-4">Arsip <span class="text-pink-400">Memori</span></h2>
+                        <p class="text-gray-400 font-anime">Pecahan memori dari misi-misi legendaris yang telah kami selesaikan di berbagai dimensi.</p>
+                    </div>
+                    <div class="mt-6 md:mt-0 summon-reveal delay-200">
+                        <a href="#" class="text-cyan-400 hover:text-white font-anime font-bold text-sm tracking-widest uppercase flex items-center gap-2 hover-active transition-colors">
+                            Buka Grimoire Lengkap
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Memory Shards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Shard 1 -->
+                    <div class="memory-shard summon-reveal delay-100 hover-active">
+                        <div class="shard-img bg-shard-1"></div>
+                        <div class="shard-overlay">
+                            <span class="text-cyan-400 text-xs font-anime font-bold tracking-widest uppercase mb-2">Misi S-Rank</span>
+                            <h3 class="text-2xl font-title font-bold text-white mb-2">Platform Perdagangan Nexus</h3>
+                            <p class="text-gray-300 text-sm font-anime">Membangun ekosistem pertukaran mata uang kripto dengan visualisasi data real-time holografik.</p>
+                        </div>
+                    </div>
+
+                    <!-- Shard 2 -->
+                    <div class="memory-shard summon-reveal delay-300 hover-active">
+                        <div class="shard-img bg-shard-2"></div>
+                        <div class="shard-overlay">
+                            <span class="text-pink-400 text-xs font-anime font-bold tracking-widest uppercase mb-2">Misi A-Rank</span>
+                            <h3 class="text-2xl font-title font-bold text-white mb-2">Katalog Busana Astral</h3>
+                            <p class="text-gray-300 text-sm font-anime">E-Commerce WebGL imersif yang memungkinkan pengguna "mencoba" pakaian secara virtual.</p>
+                        </div>
+                    </div>
+
+                    <!-- Shard 3 -->
+                    <div class="memory-shard summon-reveal delay-500 hover-active md:col-span-2 lg:col-span-1">
+                        <div class="shard-img bg-shard-3"></div>
+                        <div class="shard-overlay">
+                            <span class="text-gold text-xs font-anime font-bold tracking-widest uppercase mb-2">Misi SS-Rank</span>
+                            <h3 class="text-2xl font-title font-bold text-white mb-2">Sistem Induk Korporat</h3>
+                            <p class="text-gray-300 text-sm font-anime">Restrukturisasi total portal internal perusahaan skala enterprise dengan keamanan tingkat militer.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             TEAM (CHARACTER SHEETS)
+             ========================================= -->
+        <section class="py-24 relative z-10 bg-[#05030a]">
+            <!-- Decorative background text -->
+            <div class="absolute inset-0 overflow-hidden flex items-center justify-center pointer-events-none opacity-[0.03]">
+                <div class="text-[20rem] font-title font-black text-white whitespace-nowrap">PARTY MEMBERS</div>
+            </div>
+
+            <div class="container mx-auto px-6 md:px-12 relative z-10">
+                <div class="text-center mb-16 summon-reveal">
+                    <h2 class="text-4xl md:text-5xl font-title font-bold text-white mb-4">Anggota <span class="text-gold">Guild</span></h2>
+                    <p class="text-gray-400 font-anime">Pahlawan di balik baris kode dan piksel layar.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Member 1 -->
+                    <div class="char-card summon-reveal delay-100 hover-active">
+                        <div class="char-class-badge">Grand Caster</div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full border-2 border-white/20 mb-4 mx-auto flex items-center justify-center">
+                            <span class="text-2xl font-anime font-bold text-white">K</span>
+                        </div>
+                        <h3 class="text-xl font-title text-center text-white">Kael "The Architect"</h3>
+                        <p class="text-center text-cyan-400 text-xs font-anime font-bold mb-4">Lead Fullstack</p>
+                        
+                        <div class="space-y-2 mt-4 border-t border-white/10 pt-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Logika</span><span>98/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill mp-fill" style="width: 98%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Stamina (Kopi)</span><span>45/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill hp-fill" style="width: 45%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 2 -->
+                    <div class="char-card summon-reveal delay-200 hover-active">
+                        <div class="char-class-badge bg-pink-500 shadow-[0_0_10px_#ff7eb3]">Illusionist</div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-pink-400 to-red-400 rounded-full border-2 border-white/20 mb-4 mx-auto flex items-center justify-center">
+                            <span class="text-2xl font-anime font-bold text-white">R</span>
+                        </div>
+                        <h3 class="text-xl font-title text-center text-white">Rin "Pixel Perfect"</h3>
+                        <p class="text-center text-pink-400 text-xs font-anime font-bold mb-4">Art Director / UI</p>
+                        
+                        <div class="space-y-2 mt-4 border-t border-white/10 pt-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Kreativitas</span><span>99/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill exp-fill" style="width: 99%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Kesabaran (Revisi)</span><span>20/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill hp-fill" style="width: 20%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 3 -->
+                    <div class="char-card summon-reveal delay-300 hover-active">
+                        <div class="char-class-badge bg-cyan-500 shadow-[0_0_10px_#00f2fe]">Spellweaver</div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-full border-2 border-white/20 mb-4 mx-auto flex items-center justify-center">
+                            <span class="text-2xl font-anime font-bold text-white">Z</span>
+                        </div>
+                        <h3 class="text-xl font-title text-center text-white">Zeke "The Shader"</h3>
+                        <p class="text-center text-cyan-400 text-xs font-anime font-bold mb-4">Creative Developer</p>
+                        
+                        <div class="space-y-2 mt-4 border-t border-white/10 pt-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Matematika (WebGL)</span><span>95/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill mp-fill" style="width: 95%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Interaksi</span><span>90/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill exp-fill" style="width: 90%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Member 4 -->
+                    <div class="char-card summon-reveal delay-400 hover-active">
+                        <div class="char-class-badge bg-yellow-500 shadow-[0_0_10px_#ffd700]">Guardian</div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-600 rounded-full border-2 border-white/20 mb-4 mx-auto flex items-center justify-center">
+                            <span class="text-2xl font-anime font-bold text-white">V</span>
+                        </div>
+                        <h3 class="text-xl font-title text-center text-white">Val "Firewall"</h3>
+                        <p class="text-center text-gold text-xs font-anime font-bold mb-4">DevOps / Security</p>
+                        
+                        <div class="space-y-2 mt-4 border-t border-white/10 pt-4">
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Pertahanan</span><span>100/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill hp-fill" style="width: 100%;"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[10px] text-gray-400 font-anime uppercase"><span>Deploy Speed</span><span>85/100</span></div>
+                                <div class="stat-bar-bg h-1"><div class="stat-bar-fill exp-fill" style="width: 85%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- =========================================
+             CONTACT (SUMMONING RITUAL FORM)
+             ========================================= -->
+        <section id="summon" class="py-32 relative z-10 bg-yume-dark overflow-hidden">
+            <!-- Background particle orbs -->
+            <div class="form-floater w-64 h-64 top-10 left-10"></div>
+            <div class="form-floater w-96 h-96 bottom-10 right-10" style="animation-delay: -5s; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);"></div>
+
+            <div class="container mx-auto px-6 md:px-12">
+                <div class="max-w-4xl mx-auto summon-form-wrapper summon-reveal">
+                    
+                    <div class="text-center mb-10">
+                        <h2 class="text-4xl md:text-5xl font-title font-bold text-white mb-2">Lingkaran <span class="text-cyan-400">Pemanggilan</span></h2>
+                        <p class="text-pink-200 font-anime text-sm">Gunakan sisa mana-mu untuk mengirimkan pesan melintasi ruang dan waktu.</p>
+                    </div>
+
+                    <form id="summon-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="relative">
+                                <label class="text-xs font-anime font-bold text-cyan-400 uppercase tracking-widest mb-2 block">Nama Identitas</label>
+                                <input type="text" id="name" class="anime-input hover-active" placeholder="Misal: Kirito_99" required>
+                            </div>
+                            <div class="relative">
+                                <label class="text-xs font-anime font-bold text-cyan-400 uppercase tracking-widest mb-2 block">Jalur Transmisi (Email)</label>
+                                <input type="email" id="email" class="anime-input hover-active" placeholder="user@dimensi.net" required>
+                            </div>
+                        </div>
+                        
+                        <div class="relative">
+                            <label class="text-xs font-anime font-bold text-cyan-400 uppercase tracking-widest mb-2 block">Tipe Kontrak (Layanan)</label>
+                            <select class="anime-input hover-active appearance-none cursor-none" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300f2fe%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 1rem top 50%; background-size: 0.65rem auto;">
+                                <option value="uiux">Sihir Ilusi (UI/UX Design)</option>
+                                <option value="web">Pembuatan Portal (Web Dev)</option>
+                                <option value="3d">Dimensi Saku (3D/WebGL)</option>
+                            </select>
+                        </div>
+
+                        <div class="relative">
+                            <label class="text-xs font-anime font-bold text-cyan-400 uppercase tracking-widest mb-2 block">Isi Mantra (Pesan)</label>
+                            <textarea id="message" rows="5" class="anime-input hover-active resize-none" placeholder="Tulis rincian pencarianmu di sini..." required></textarea>
+                        </div>
+                        
+                        <div class="pt-4 text-center">
+                            <button type="submit" class="btn-isekai w-full md:w-auto hover-active px-16 py-4 text-lg">
+                                <span class="relative z-10 flex items-center justify-center gap-2">
+                                    Mulai Ritual Pemanggilan
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================
+         FOOTER (CREDITS & LORE)
+         ========================================= -->
+    <footer class="relative z-10 border-t border-pink-500/20 bg-[#05030a] pt-16 pb-8 overflow-hidden">
+        <!-- Magic top border glow -->
+        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[80%] h-px bg-gradient-to-r from-transparent via-pink-500 to-transparent shadow-[0_0_15px_#ff7eb3]"></div>
+        
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                
+                <!-- Brand -->
+                <div class="lg:col-span-1">
+                    <div class="text-2xl font-title text-white mb-4 drop-shadow-[0_0_5px_rgba(255,126,179,0.8)]">
+                        Yume<span class="text-pink-400">Guild</span>
+                    </div>
+                    <p class="text-gray-500 text-sm font-anime leading-relaxed mb-6">Guild petualang digital yang siap merealisasikan fantasimu ke dalam layar. Beroperasi di persimpangan antara seni dan kode.</p>
+                </div>
+
+                <!-- Fast Travel -->
+                <div>
+                    <h4 class="text-white font-title mb-5 text-lg">Fast Travel</h4>
+                    <ul class="space-y-3 font-anime text-sm">
+                        <li><a href="#home" class="text-gray-500 hover:text-cyan-400 transition-colors hover-active">Titik Simpan (Beranda)</a></li>
+                        <li><a href="#story" class="text-gray-500 hover:text-cyan-400 transition-colors hover-active">Buku Catatan (Cerita)</a></li>
+                        <li><a href="#skills" class="text-gray-500 hover:text-cyan-400 transition-colors hover-active">Pohon Keahlian</a></li>
+                    </ul>
+                </div>
+
+                <!-- Guild Info -->
+                <div>
+                    <h4 class="text-white font-title mb-5 text-lg">Info Guild</h4>
+                    <ul class="space-y-3 font-anime text-sm">
+                        <li class="text-gray-500">Markas: Distrik Cyber-Tokyo 07</li>
+                        <li class="text-gray-500">Kapasitas Server: S-Tier</li>
+                        <li class="text-gray-500">Status: <span class="text-green-400 drop-shadow-[0_0_5px_#4ade80]">Menerima Misi</span></li>
+                    </ul>
+                </div>
+
+                <!-- Status Panel -->
+                <div class="lg:col-span-1">
+                    <h4 class="text-white font-title mb-5 text-lg">Status Sistem</h4>
+                    <div class="bg-[#0d0a1b] border border-white/10 rounded-lg p-4 font-anime text-xs text-gray-400">
+                        <div class="flex justify-between mb-2"><span>Koneksi Mana:</span> <span class="text-cyan-400">Stabil (99.9%)</span></div>
+                        <div class="flex justify-between mb-2"><span>Versi Engine:</span> <span class="text-pink-400">v3.1.4 (Isekai Build)</span></div>
+                        <div class="flex justify-between"><span>Ping Jaringan:</span> <span class="text-gold">14ms</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-600 text-xs font-anime">© 2026 YumeGuild. Semua data tersimpan dengan aman di dalam kristal memori.</p>
+                <div class="text-gray-600 text-xs font-anime mt-4 md:mt-0 flex items-center gap-2">
+                    Ditempa dengan <span class="text-pink-500 animate-pulse">❤</span> dan Sihir
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- =========================================
+         JAVASCRIPT ENGINE 
+         ========================================= -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. PRELOADER & INTRO LOGIC ---
+            const preloader = document.getElementById('preloader');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            let loadProgress = 0;
+            const loadInterval = setInterval(() => {
+                loadProgress += Math.random() * 10;
+                if(loadProgress > 100) loadProgress = 100;
+                
+                progressBar.style.width = `${loadProgress}%`;
+                progressText.innerText = `KONEKSI SISTEM: ${Math.floor(loadProgress)}%`;
+                
+                if(loadProgress === 100) {
+                    clearInterval(loadInterval);
+                    progressText.innerText = "KONEKSI BERHASIL. MEMBUKA GERBANG...";
+                    progressText.style.color = "#00f2fe";
+                    
+                    setTimeout(() => {
+                        preloader.style.opacity = '0';
+                        setTimeout(() => {
+                            preloader.style.visibility = 'hidden';
+                            preloader.style.display = 'none';
+                            triggerReveals(); // Mulai animasi scroll
+                            startVisualNovel(); // Mulai teks VN
+                        }, 1500);
+                    }, 800);
+                }
+            }, 100);
+
+            // --- 2. ANIME CUSTOM CURSOR ---
+            const cursor = document.getElementById('custom-cursor');
+            const hoverTargets = document.querySelectorAll('.hover-active, a, button, input, textarea, select');
+
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                cursor.style.left = `${mouseX}px`;
+                cursor.style.top = `${mouseY}px`;
+            });
+
+            hoverTargets.forEach(target => {
+                target.addEventListener('mouseenter', () => document.body.classList.add('hover-active'));
+                target.addEventListener('mouseleave', () => document.body.classList.remove('hover-active'));
+            });
+
+            // --- 3. STICKY NAVBAR & MOBILE MENU ---
+            const navbar = document.getElementById('navbar');
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            let isMenuOpen = false;
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Highlight active nav item
+                let current = '';
+                document.querySelectorAll('section').forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                document.querySelectorAll('.nav-item').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                if(isMenuOpen) {
+                    mobileMenu.classList.remove('hidden');
+                    // Ganti icon ke X
+                    menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>';
+                    setTimeout(() => mobileMenu.classList.remove('opacity-0'), 10);
+                } else {
+                    mobileMenu.classList.add('opacity-0');
+                    // Kembali ke hamburger
+                    menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>';
+                    setTimeout(() => mobileMenu.classList.add('hidden'), 500);
+                }
+            }
+
+            mobileBtn.addEventListener('click', toggleMenu);
+            mobileLinks.forEach(link => link.addEventListener('click', toggleMenu));
+
+            // --- 4. SCROLL REVEAL (INTERSECTION OBSERVER) ---
+            const revealElements = document.querySelectorAll('.summon-reveal, .summon-left, .summon-right');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+            function triggerReveals() {
+                revealElements.forEach(el => {
+                    revealObserver.observe(el);
+                    if(el.getBoundingClientRect().top < window.innerHeight) {
+                        el.classList.add('active');
+                    }
+                });
+            }
+
+            // --- 5. STATS COUNTER RPG STYLE ---
+            const statNumbers = document.querySelectorAll('.stat-number');
+            let hasCounted = false;
+            const statsSection = document.querySelector('#story');
+            
+            const countObserver = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting && !hasCounted) {
+                    hasCounted = true;
+                    statNumbers.forEach(stat => {
+                        const target = parseInt(stat.getAttribute('data-target'));
+                        let current = 0;
+                        const increment = target / 100; // Speed
+                        
+                        const updateCount = () => {
+                            current += increment;
+                            if(current < target) {
+                                stat.innerText = Math.ceil(current);
+                                requestAnimationFrame(updateCount);
+                            } else {
+                                stat.innerText = target;
+                            }
+                        };
+                        updateCount();
+                    });
+                }
+            }, { threshold: 0.5 });
+            if(statsSection) countObserver.observe(statsSection);
+
+            // --- 6. VISUAL NOVEL DIALOGUE SYSTEM ---
+            const dialogLines = [
+                "Selamat datang, Pengembara. Saya Yumi, AI pendamping operasional di YumeGuild.",
+                "Dunia digital saat ini dipenuhi dengan entitas web yang membosankan dan tanpa jiwa...",
+                "Tugas kami di sini adalah menyuntikkan 'sihir' ke dalam setiap baris kode.",
+                "Kami merekrut talenta terbaik lintas dimensi—desainer UI yang memanipulasi persepsi, dan penyihir WebGL yang membengkokkan realitas 3D.",
+                "Apakah kamu siap untuk memulai quest bersama kami? Pilih kelasmu di bawah ini."
+            ];
+            const vnTextContent = document.getElementById('vn-text-content');
+            const vnBox = document.getElementById('vn-box');
+            let currentLineIndex = 0;
+            let isTyping = false;
+            let typeTimeout;
+
+            function typeLine(lineText) {
+                isTyping = true;
+                vnTextContent.innerHTML = '';
+                let charIndex = 0;
+                
+                function typeChar() {
+                    if (charIndex < lineText.length) {
+                        vnTextContent.innerHTML += lineText.charAt(charIndex);
+                        charIndex++;
+                        typeTimeout = setTimeout(typeChar, 30); // Kecepatan ketik
+                    } else {
+                        isTyping = false;
+                    }
+                }
+                typeChar();
+            }
+
+            function startVisualNovel() {
+                // Hanya mulai jika user scroll ke bagian about/story untuk performa
+                const vnObserver = new IntersectionObserver((entries) => {
+                    if(entries[0].isIntersecting && currentLineIndex === 0 && !isTyping) {
+                        typeLine(dialogLines[0]);
+                        vnObserver.disconnect(); // Sekali saja
+                    }
+                }, { threshold: 0.5 });
+                vnObserver.observe(document.getElementById('story'));
+            }
+
+            // Klik box untuk lanjut dialog
+            vnBox.addEventListener('click', () => {
+                if (isTyping) {
+                    // Skip typing, show full line immediately
+                    clearTimeout(typeTimeout);
+                    vnTextContent.innerHTML = dialogLines[currentLineIndex];
+                    isTyping = false;
+                } else {
+                    // Next line
+                    currentLineIndex++;
+                    if (currentLineIndex < dialogLines.length) {
+                        typeLine(dialogLines[currentLineIndex]);
+                    } else {
+                        // Loop kembali atau selesai
+                        currentLineIndex = 0;
+                        typeLine(dialogLines[0]);
+                    }
+                }
+            });
+
+            // --- 7. SAKURA PHYSICS ENGINE (CANVAS) ---
+            const canvas = document.getElementById('anime-canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let sakuras = [];
+            
+            // Konfigurasi performa
+            const isMobile = window.innerWidth < 768;
+            const sakuraCount = isMobile ? 35 : 100;
+            
+            // Warna kelopak sakura (variasi pink)
+            const sakuraColors = ['#ff7eb3', '#ffb7c5', '#ff9eaa', '#ffc2d1'];
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+
+            class SakuraPetal {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height - height; // Mulai dari atas
+                    this.z = Math.random() * 0.5 + 0.5; // Kedalaman untuk parallax/scale
+                    
+                    this.vx = (Math.random() - 0.5) * 2; // Kecepatan horizontal awal
+                    this.vy = (Math.random() * 1.5 + 1) * this.z; // Kecepatan vertikal (gravitasi)
+                    
+                    // Rotasi 3D pseudo
+                    this.rx = Math.random() * 360;
+                    this.ry = Math.random() * 360;
+                    this.rz = Math.random() * 360;
+                    
+                    this.rxv = Math.random() * 2 - 1;
+                    this.ryv = Math.random() * 2 - 1;
+                    this.rzv = Math.random() * 2 - 1;
+                    
+                    this.size = (Math.random() * 8 + 4) * this.z;
+                    this.color = sakuraColors[Math.floor(Math.random() * sakuraColors.length)];
+                    this.alpha = Math.random() * 0.5 + 0.3; // Sedikit transparan
+                    
+                    // Angin (fungsi sinus)
+                    this.windPhase = Math.random() * Math.PI * 2;
+                }
+
+                update() {
+                    // Fisika gerak
+                    this.y += this.vy;
+                    
+                    // Efek angin gelombang
+                    this.windPhase += 0.01;
+                    const windForce = Math.sin(this.windPhase) * 1.5;
+                    this.x += this.vx + windForce;
+
+                    // Rotasi
+                    this.rx += this.rxv;
+                    this.ry += this.ryv;
+                    this.rz += this.rzv;
+
+                    // Reset jika keluar layar (bawah atau samping jauh)
+                    if (this.y > height + 20 || this.x > width + 50 || this.x < -50) {
+                        this.y = -20;
+                        this.x = Math.random() * width;
+                        // Acak kecepatan lagi saat respawn
+                        this.vy = (Math.random() * 1.5 + 1) * this.z;
+                    }
+
+                    // Interaksi kursor menjauh (Tolak menolak angin sihir)
+                    let dx = mouseX - this.x;
+                    let dy = mouseY - this.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    
+                    if (dist < 100) {
+                        // Kursor mendorong partikel
+                        this.x -= (dx / dist) * 2;
+                        this.y -= (dy / dist) * 2;
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    
+                    // Simulasi rotasi 3D dengan transformasi 2D (skew & scale)
+                    // Math.cos untuk Ry membuat efek membalik (flip) kelopak
+                    const radRy = this.ry * Math.PI / 180;
+                    const radRz = this.rz * Math.PI / 180;
+                    
+                    ctx.rotate(radRz);
+                    ctx.scale(Math.abs(Math.cos(radRy)) + 0.1, 1); // +0.1 agar tidak sepenuhnya hilang saat pipih
+
+                    // Menggambar bentuk kelopak Sakura (bentuk hati/tetesan khusus)
+                    ctx.beginPath();
+                    ctx.fillStyle = this.color;
+                    ctx.globalAlpha = this.alpha;
+                    
+                    // Bentuk bezier kurva kompleks untuk petal sakura
+                    ctx.moveTo(0, 0);
+                    ctx.bezierCurveTo(this.size, -this.size, this.size*2, this.size/2, 0, this.size*1.5);
+                    ctx.bezierCurveTo(-this.size*2, this.size/2, -this.size, -this.size, 0, 0);
+                    
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            function initSakuraEngine() {
+                resizeCanvas();
+                sakuras = [];
+                for (let i = 0; i < sakuraCount; i++) {
+                    sakuras.push(new SakuraPetal());
+                }
+            }
+
+            function animateSakura() {
+                // Bersihkan canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                for (let i = 0; i < sakuras.length; i++) {
+                    sakuras[i].update();
+                    sakuras[i].draw();
+                }
+                
+                requestAnimationFrame(animateSakura);
+            }
+
+            // Jalankan engine
+            initSakuraEngine();
+            animateSakura();
+            
+            window.addEventListener('resize', initSakuraEngine);
+
+            // --- 8. FORM SUBMISSION LOGIC ---
+            const summonForm = document.getElementById('summon-form');
+            summonForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = summonForm.querySelector('button');
+                const span = btn.querySelector('span');
+                const originalText = span.innerHTML;
+                
+                span.innerHTML = 'MEMBENTUK SEGEL SIHIR... <svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10" stroke-width="4" stroke-dasharray="30 30"></circle></svg>';
+                
+                // Simulasi network request
+                setTimeout(() => {
+                    span.innerHTML = 'PANGGILAN BERHASIL!';
+                    span.style.color = "#00f2fe";
+                    
+                    setTimeout(() => {
+                        span.innerHTML = originalText;
+                        span.style.color = "";
+                        summonForm.reset();
+                    }, 3000);
+                }, 2000);
+            });
+
+        });
+    </script>
+</body>
+</html>
