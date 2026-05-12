@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Jakarta');
 // ==============================================================================
 $host = 'gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com';
 $user = 'e1aHBgKkkYs5ecU.root';
-$pass = 'j8fnX6U6qQYDDicd'; 
+$pass = 'j8fnX6U6qOYDDicd'; 
 $db   = 'nexus_gaming';
 $port = 4000;
 
