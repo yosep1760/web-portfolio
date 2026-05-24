@@ -3,360 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiseki no Sekai | 奇跡の世界</title>
+    <title>Symphony of the Shinigami | Melampaui Batas</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700;900&family=Oswald:wght@400;700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        jp: ['"Noto Sans JP"', 'sans-serif'],
+                        oswald: ['"Oswald"', 'sans-serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                    },
+                    colors: {
+                        'neon-pink': '#ff2a6d',
+                        'neon-cyan': '#05d9e8',
+                        'dark-bg': '#01012b',
+                        'void': '#000000',
+                        'blood': '#8a0303',
+                        'gold': '#ffd700'
+                    },
+                    backgroundImage: {
+                        'cyber-grid': 'linear-gradient(rgba(5, 217, 232, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(5, 217, 232, 0.1) 1px, transparent 1px)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
+        /* CUSTOM CORE STYLES & ANIMATIONS */
         :root {
-            --primary: #ff0055;
-            --secondary: #00f0ff;
-            --dark: #050505;
-            --light: #f4f4f4;
-            --gold: #ffaa00;
+            --sakura-color: #ffb7c5;
         }
-
         body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--dark);
-            color: var(--light);
+            background-color: #000;
+            color: #fff;
             overflow-x: hidden;
-            cursor: none;
+            font-family: 'Noto Sans JP', sans-serif;
         }
-
-        .font-jp { font-family: 'Noto Sans JP', sans-serif; }
-        .font-serif-custom { font-family: 'Cinzel', serif; }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
+        ::-webkit-scrollbar-thumb { background: #ff2a6d; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #05d9e8; }
 
-        /* Custom Cursor */
-        #cursor, #cursor-trail {
+        /* Canvas Particle System */
+        #canvas-container {
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
             pointer-events: none;
-            z-index: 9999;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
         }
-        #cursor {
-            width: 10px; height: 10px;
-            background-color: var(--secondary);
-            box-shadow: 0 0 10px var(--secondary), 0 0 20px var(--secondary);
-        }
-        #cursor-trail {
-            width: 30px; height: 30px;
-            border: 2px solid var(--primary);
-            transition: 0.1s ease-out;
-        }
-        .hover-target:hover ~ #cursor { width: 20px; height: 20px; background-color: var(--primary); box-shadow: 0 0 20px var(--primary); }
-        .hover-target:hover ~ #cursor-trail { width: 50px; height: 50px; border-color: var(--secondary); transform: translate(-50%, -50%) rotate(45deg); border-radius: 0; }
 
-        /* Preloader */
-        #preloader {
-            position: fixed; inset: 0;
-            background: #000; z-index: 10000;
-            display: flex; justify-content: center; align-items: center;
-            flex-direction: column; transition: opacity 1s ease, visibility 1s;
+        /* Glitch Effect */
+        .glitch-wrapper {
+            position: relative;
         }
-        .katana-loader {
-            width: 200px; height: 4px; background: #333; position: relative; overflow: hidden;
+        .glitch {
+            position: relative;
+            color: white;
+            font-size: 6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.5rem;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(255,42,109,0.8);
         }
-        .katana-blade {
-            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, var(--secondary), #fff, var(--secondary), transparent);
-            animation: slash 1.5s infinite ease-in-out;
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
         }
-        @keyframes slash { 0% { left: -100%; } 100% { left: 100%; } }
-        .glitch-text {
-            font-size: 2rem; font-weight: bold; text-transform: uppercase;
-            position: relative; color: white; margin-bottom: 20px; letter-spacing: 5px;
+        .glitch::before {
+            left: 3px;
+            text-shadow: -2px 0 #ff2a6d;
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
         }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000;
+        .glitch::after {
+            left: -3px;
+            text-shadow: -2px 0 #05d9e8;
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
         }
-        .glitch-text::before {
-            left: 2px; text-shadow: -2px 0 red; animation: glitch-anim-1 2s infinite linear alternate-reverse;
-        }
-        .glitch-text::after {
-            left: -2px; text-shadow: -2px 0 blue; animation: glitch-anim-2 3s infinite linear alternate-reverse;
-        }
+
         @keyframes glitch-anim-1 {
-            0% { clip-path: inset(20% 0 80% 0); } 20% { clip-path: inset(60% 0 10% 0); }
-            40% { clip-path: inset(40% 0 50% 0); } 60% { clip-path: inset(80% 0 5% 0); }
-            80% { clip-path: inset(10% 0 70% 0); } 100% { clip-path: inset(30% 0 20% 0); }
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
         }
         @keyframes glitch-anim-2 {
-            0% { clip-path: inset(10% 0 60% 0); } 20% { clip-path: inset(30% 0 20% 0); }
-            40% { clip-path: inset(70% 0 10% 0); } 60% { clip-path: inset(20% 0 50% 0); }
-            80% { clip-path: inset(50% 0 30% 0); } 100% { clip-path: inset(5% 0 80% 0); }
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(50% 0 30% 0); }
+            100% { clip-path: inset(5% 0 80% 0); }
         }
 
-        /* Canvas Background */
-        #canvas-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 1.2s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 1.2s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 1.2s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-        /* Typography & Effects */
-        .text-stroke { -webkit-text-stroke: 1px var(--light); color: transparent; }
-        .text-stroke-primary { -webkit-text-stroke: 1px var(--primary); color: transparent; }
-        .neon-glow { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary), 0 0 40px var(--primary); }
-        .neon-glow-sec { text-shadow: 0 0 10px var(--secondary), 0 0 20px var(--secondary), 0 0 40px var(--secondary); }
+        /* Float & Pulse */
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .pulsing-glow { animation: pulseGlow 2s infinite alternate; }
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 10px #ff2a6d, 0 0 20px #ff2a6d; }
+            to { box-shadow: 0 0 20px #05d9e8, 0 0 40px #05d9e8; }
+        }
+
+        /* 3D Tilt Cards */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.1s;
+        }
+        .tilt-content {
+            transform: translateZ(50px);
+        }
+
+        /* Parallax Backgrounds */
+        .bg-parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Neon Borders */
+        .border-neon {
+            border: 2px solid #05d9e8;
+            box-shadow: inset 0 0 10px #05d9e8, 0 0 10px #05d9e8;
+        }
+
+        /* Text Stroke */
+        .text-stroke {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+            color: transparent;
+        }
+
+        /* Scanlines Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+
+        /* Katakana Background Overlay */
+        .katakana-bg {
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.03;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            font-family: 'Noto Sans JP';
+            font-weight: 900;
+            z-index: -1;
+            user-select: none;
+        }
+
+        /* Magic Circle */
+        .magic-circle {
+            animation: spin 20s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         
-        .kanji-bg {
-            position: absolute; font-size: 20vw; color: rgba(255,255,255,0.03);
-            font-weight: 900; line-height: 1; user-select: none; z-index: 0; pointer-events: none;
-            white-space: nowrap; transform: rotate(-5deg);
+        .magic-circle-reverse {
+            animation: spin-reverse 15s linear infinite;
         }
+        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
 
-        /* Hero Section */
-        .hero-container {
-            position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden;
+        /* Loader */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease;
         }
-        .hero-video-wrap { position: absolute; inset: 0; z-index: 0; opacity: 0.4; }
-        .hero-video-wrap::after {
-            content: ''; position: absolute; inset: 0;
-            background: radial-gradient(circle, transparent 20%, #050505 80%);
+        .katana-loader {
+            width: 200px;
+            height: 2px;
+            background: #333;
+            position: relative;
+            overflow: hidden;
         }
-        .hero-content { position: relative; z-index: 10; text-align: center; }
+        .katana-blade {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #ff2a6d, #fff);
+            animation: slash 1.5s infinite;
+        }
+        @keyframes slash {
+            100% { left: 100%; }
+        }
         
-        /* Marquee */
-        .marquee-container {
-            width: 100%; overflow: hidden; background: var(--primary); color: #000; padding: 10px 0;
-            position: relative; display: flex; transform: skewY(-2deg); z-index: 20; border-top: 2px solid var(--light); border-bottom: 2px solid var(--light);
+        
+        /* Custom Modal */
+        .modal-overlay {
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease-out forwards;
         }
-        .marquee-content {
-            display: flex; white-space: nowrap; animation: marquee 20s linear infinite; font-size: 1.5rem; font-weight: 700; text-transform: uppercase;
+        .modal-content {
+            box-shadow: 0 0 30px rgba(5, 217, 232, 0.4), inset 0 0 20px rgba(5, 217, 232, 0.1);
+            animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .marquee-content span { margin: 0 2vw; display: inline-block; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-50px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* Cards */
-        .character-card {
-            background: rgba(20, 20, 20, 0.8); border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); border-radius: 15px; overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative;
+        /* Boss Health Bar */
+        .hp-bar-container {
+            width: 100%;
+            height: 40px;
+            background: #111;
+            border: 2px solid #8a0303;
+            position: relative;
+            overflow: hidden;
+            transform: skewX(-10deg);
+        }
+        .hp-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8a0303, #ff2a6d);
+            width: 100%;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 20px #ff2a6d;
+        }
+        .damage-text {
+            position: absolute;
+            color: white;
+            font-weight: 900;
+            font-family: 'Oswald', sans-serif;
+            text-shadow: 0 0 5px red;
+            pointer-events: none;
+            animation: floatUpFade 1s ease-out forwards;
+            z-index: 50;
+        }
+        @keyframes floatUpFade {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
+        }
+
+        /* Gacha Cards */
+        .gacha-scene {
+            perspective: 1000px;
+        }
+        .gacha-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
         }
-        .character-card::before {
-            content: ''; position: absolute; inset: 0; background: linear-gradient(45deg, var(--primary), var(--secondary));
-            opacity: 0; transition: opacity 0.5s; z-index: -1; margin: -2px; border-radius: 17px;
+        .gacha-card.flipped .gacha-card-inner {
+            transform: rotateY(180deg);
         }
-        .character-card:hover { transform: translateY(-10px) scale(1.02); border-color: transparent; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .character-card:hover::before { opacity: 1; animation: rotateBg 3s linear infinite; }
-        @keyframes rotateBg { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+        .gacha-card-front, .gacha-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 8px;
+        }
+        .gacha-card-front {
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #05d9e8;
+            font-size: 3rem;
+            transform: rotateY(0deg);
+        }
+        .gacha-card-back {
+            background-color: #000;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 1rem;
+            background-size: cover;
+            background-position: center;
+        }
         
-        .char-img-container { width: 100%; height: 300px; overflow: hidden; position: relative; clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%); }
-        .char-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; filter: grayscale(100%) contrast(1.2); }
-        .character-card:hover .char-img { transform: scale(1.1); filter: grayscale(0%) contrast(1.1); }
+        /* Rarity Borders */
+        .border-ssr { border: 3px solid #ffd700; box-shadow: 0 0 15px #ffd700, inset 0 0 10px #ffd700; }
+        .border-sr { border: 3px solid #ff2a6d; box-shadow: 0 0 15px #ff2a6d, inset 0 0 10px #ff2a6d; }
+        .border-r { border: 3px solid #05d9e8; box-shadow: 0 0 10px #05d9e8; }
         
-        .char-stats { display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
-        .stat-bar { height: 4px; background: #333; width: 100%; margin-top: 5px; border-radius: 2px; overflow: hidden; }
-        .stat-fill { height: 100%; background: var(--secondary); width: 0; transition: width 1s ease-in-out; }
+        /* Map Nodes */
+        .map-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #05d9e8;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px #05d9e8;
+            transition: all 0.3s;
+        }
+        .map-node::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border: 1px solid #05d9e8;
+            border-radius: 50%;
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        .map-node:hover { transform: translate(-50%, -50%) scale(1.5); background: #ff2a6d; box-shadow: 0 0 20px #ff2a6d; }
+        .map-node:hover::before { border-color: #ff2a6d; }
+        .map-tooltip {
+            position: absolute;
+            bottom: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            background: rgba(0,0,0,0.9);
+            border: 1px solid #05d9e8;
+            padding: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            z-index: 10;
+        }
+        .map-node:hover .map-tooltip { opacity: 1; bottom: 180%; }
 
-        /* Gallery */
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); grid-auto-rows: 250px; gap: 15px; }
-        .gallery-item { position: relative; overflow: hidden; border-radius: 10px; cursor: pointer; }
-        .gallery-item.large { grid-column: span 2; grid-row: span 2; }
-        .gallery-item.wide { grid-column: span 2; }
-        .gallery-item.tall { grid-row: span 2; }
-        .gallery-img { width: 100%; height: 100%; object-fit: cover; transition: all 0.7s ease; }
-        .gallery-overlay {
-            position: absolute; inset: 0; background: rgba(255, 0, 85, 0.7); display: flex; flex-direction: column;
-            justify-content: center; align-items: center; opacity: 0; transition: all 0.5s ease;
-            transform: translateY(100%); backdrop-filter: blur(5px);
-        }
-        .gallery-item:hover .gallery-img { transform: scale(1.2) rotate(2deg); filter: blur(2px); }
-        .gallery-item:hover .gallery-overlay { opacity: 1; transform: translateY(0); }
-
-        /* Scroll Reveal Utility */
-        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-        .reveal-left { opacity: 0; transform: translateX(-100px); transition: all 1s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal-left.active { opacity: 1; transform: translateX(0); }
-        .reveal-right { opacity: 0; transform: translateX(100px); transition: all 1s cubic-bezier(0.5, 0, 0, 1); }
-        .reveal-right.active { opacity: 1; transform: translateX(0); }
-
-        /* Tech UI Elements */
-        .cyber-border {
-            position: relative; border: 1px solid var(--secondary); padding: 2rem;
-            background: linear-gradient(135deg, rgba(0,240,255,0.05), rgba(255,0,85,0.05));
-        }
-        .cyber-border::before, .cyber-border::after {
-            content: ''; position: absolute; width: 20px; height: 20px; border: 2px solid var(--secondary); transition: all 0.3s;
-        }
-        .cyber-border::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .cyber-border::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-        .cyber-border:hover::before { width: 100%; height: 100%; opacity: 0.3; }
-        .cyber-border:hover::after { width: 100%; height: 100%; opacity: 0.3; }
-
-        /* Navigation */
-        nav { backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .nav-link { position: relative; overflow: hidden; display: inline-block; }
-        .nav-link::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
-            background: var(--primary); transform: translateX(-100%); transition: transform 0.3s ease;
-        }
-        .nav-link:hover::after { transform: translateX(0); }
-        
-        /* Floating Elements Animation */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        
-        /* Episode List styling */
-        .ep-row {
-            display: grid; grid-template-columns: 80px 1fr auto; gap: 20px; align-items: center;
-            padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.3s;
-            position: relative; overflow: hidden;
-        }
-        .ep-row::before {
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--primary); transform: scaleY(0); transition: transform 0.3s; transform-origin: bottom;
-        }
-        .ep-row:hover { background: rgba(255,255,255,0.02); padding-left: 25px; }
-        .ep-row:hover::before { transform: scaleY(1); }
-        .ep-num { font-size: 2rem; font-family: 'Cinzel', serif; color: rgba(255,255,255,0.2); font-weight: bold; }
-        .ep-row:hover .ep-num { color: var(--secondary); text-shadow: 0 0 10px var(--secondary); }
-
-        /* Footer */
-        .footer-clip { clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%); background: #020202; position: relative; }
+        /* Audio Player Spin */
+        .vinyl-spin { animation: spin 4s linear infinite; }
+        .vinyl-paused { animation-play-state: paused; }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-neon-pink selection:text-white">
 
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="glitch-text" data-text="SYSTEM INITIATION">SYSTEM INITIATION</div>
-        <div class="text-sm tracking-widest text-gray-500 mb-8 font-jp">システム起動中...</div>
-        <div class="katana-loader"><div class="katana-blade"></div></div>
+    <!-- Floating Audio BGM Player -->
+    <div class="fixed bottom-6 right-6 z-[90] bg-dark-bg/80 backdrop-blur-md border border-neon-cyan/50 p-3 rounded-full flex items-center gap-4 shadow-[0_0_20px_rgba(5,217,232,0.2)] hover:shadow-[0_0_30px_rgba(5,217,232,0.5)] transition-all group">
+        <button id="bgm-toggle" class="w-12 h-12 rounded-full bg-void border border-neon-cyan flex items-center justify-center text-neon-cyan hover:bg-neon-cyan hover:text-void transition-colors focus:outline-none relative overflow-hidden">
+            <i class="fa-solid fa-play absolute" id="play-icon"></i>
+            <i class="fa-solid fa-pause absolute opacity-0" id="pause-icon"></i>
+        </button>
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-gray-700 flex items-center justify-center relative overflow-hidden vinyl-spin vinyl-paused" id="vinyl-disc">
+            <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614315585028-569b93540e1b?auto=format&fit=crop&q=80&w=100')] bg-cover bg-center opacity-50"></div>
+            <div class="w-4 h-4 bg-neon-pink rounded-full z-10 border-2 border-white"></div>
+        </div>
+        <div class="hidden sm:block pr-4 overflow-hidden w-0 group-hover:w-48 transition-all duration-500 ease-in-out whitespace-nowrap">
+            <p class="text-xs font-oswald text-gray-400">NOW PLAYING</p>
+            <p class="text-sm font-jp text-neon-cyan truncate animate-pulse">Cyber-Katana Syndicate.mp3</p>
+        </div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div id="cursor"></div>
-    <div id="cursor-trail"></div>
+    <!-- Custom System Modal -->
+    <div id="sys-modal" class="fixed inset-0 z-[10000] hidden flex items-center justify-center modal-overlay">
+        <div class="bg-dark-bg w-[90%] max-w-md border-2 border-neon-cyan p-8 relative modal-content">
+            <!-- Decorative corners -->
+            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-neon-pink -translate-x-2 -translate-y-2"></div>
+            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-neon-pink translate-x-2 translate-y-2"></div>
+            
+            <div class="text-center">
+                <i class="fa-solid fa-triangle-exclamation text-4xl text-neon-pink mb-4 animate-pulse"></i>
+                <h3 id="sys-modal-title" class="text-2xl font-oswald text-white tracking-widest mb-2 uppercase">SYSTEM ALERT</h3>
+                <div class="w-full h-px bg-gradient-to-r from-transparent via-neon-cyan to-transparent mb-6"></div>
+                <p id="sys-modal-message" class="text-gray-300 font-jp leading-relaxed mb-8">Pesan sistem akan muncul di sini.</p>
+                <button onclick="closeSysModal()" class="w-full py-3 border border-neon-cyan text-neon-cyan font-oswald hover:bg-neon-cyan hover:text-black transition-all tracking-widest">
+                    ACKNOWLEDGE [ENTER]
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Background Canvas for Interactive Particles -->
-    <canvas id="canvas-bg"></canvas>
+    <!-- Preloader -->
+    <div id="loader">
+        <h1 class="text-4xl font-oswald text-white mb-8 tracking-[0.5em] glitch-wrapper">
+            <span class="glitch text-2xl" data-text="AWAKENING">AWAKENING</span>
+        </h1>
+        <div class="katana-loader">
+            <div class="katana-blade"></div>
+        </div>
+        <p class="mt-4 text-gray-500 font-jp tracking-widest text-sm">MEMUAT DUNIA...</p>
+    </div>
+
+    <!-- Background Effects -->
+    <div id="canvas-container"></div>
+    <div class="scanlines"></div>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 transition-all duration-300 py-4 px-8" id="navbar">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <a href="#" class="text-3xl font-bold font-serif-custom text-white hover-target">
-                Kiseki<span class="text-[var(--primary)]">.</span>
-            </a>
-            <div class="hidden md:flex space-x-8 text-sm font-bold tracking-widest uppercase">
-                <a href="#lore" class="nav-link hover-target hover:text-[var(--secondary)] transition-colors">Lore</a>
-                <a href="#roster" class="nav-link hover-target hover:text-[var(--secondary)] transition-colors">Roster</a>
-                <a href="#episodes" class="nav-link hover-target hover:text-[var(--secondary)] transition-colors">Episodes</a>
-                <a href="#gallery" class="nav-link hover-target hover:text-[var(--secondary)] transition-colors">Gallery</a>
+    <nav class="fixed w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <i class="fa-solid fa-yin-yang text-neon-pink text-3xl animate-spin" style="animation-duration: 3s;"></i>
+                    <span class="font-cinzel font-bold text-2xl tracking-widest text-white">SHINIGAMI</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 font-oswald tracking-wider">
+                        <a href="#home" class="hover:text-neon-pink transition-colors px-3 py-2 text-sm uppercase">Beranda <span class="text-xs text-gray-500 block">ホーム</span></a>
+                        <a href="#lore" class="hover:text-neon-cyan transition-colors px-3 py-2 text-sm uppercase">Kisah <span class="text-xs text-gray-500 block">物語</span></a>
+                        <a href="#roster" class="hover:text-neon-pink transition-colors px-3 py-2 text-sm uppercase">Karakter <span class="text-xs text-gray-500 block">キャラクター</span></a>
+                        <a href="#gallery" class="hover:text-neon-cyan transition-colors px-3 py-2 text-sm uppercase">Galeri <span class="text-xs text-gray-500 block">ギャラリー</span></a>
+                        <a href="#dojo" class="hover:text-neon-pink transition-colors px-3 py-2 text-sm uppercase">Dojo <span class="text-xs text-gray-500 block">道場</span></a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-white hover:text-neon-pink focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
             </div>
-            <button class="md:hidden text-white hover-target focus:outline-none">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero-container" id="home">
-        <!-- Abstract CSS Background Pattern -->
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(var(--secondary) 1px, transparent 1px); background-size: 40px 40px;"></div>
-        
-        <div class="kanji-bg top-10 -left-20 animate-float delay-100">運命</div>
-        <div class="kanji-bg bottom-10 -right-10 animate-float delay-300">奇跡</div>
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- Simulated Parallax Video/Image Background -->
+            <div class="w-full h-full bg-cover bg-center bg-parallax opacity-40 transform scale-105" style="background-image: url('https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=2000');"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark-bg/80 to-dark-bg"></div>
+        </div>
 
-        <div class="hero-content max-w-5xl px-4 flex flex-col items-center">
-            <p class="text-[var(--secondary)] font-jp tracking-[0.5em] mb-4 text-sm md:text-xl reveal">私たちの物語が始まる</p>
-            <h1 class="text-6xl md:text-8xl lg:text-9xl font-black mb-6 leading-none reveal font-serif-custom uppercase relative">
-                <span class="absolute -inset-1 blur-lg opacity-50 text-[var(--primary)]">BEYOND</span>
-                <span class="relative text-white">BEYOND</span>
-                <br>
-                <span class="text-stroke">LIMITS</span>
-            </h1>
-            <p class="text-gray-400 max-w-2xl mx-auto text-lg md:text-xl mb-10 reveal tracking-wide font-light">
-                Mengeksplorasi batas realitas di dimensi Neo-Tokyo. Rasakan pengalaman interaktif visualisasi data, karakter, dan cerita yang melampaui imajinasi.
+        <div class="relative z-10 text-center px-4">
+            <div class="katakana-bg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                限界を超える
+            </div>
+            <p class="font-jp text-neon-cyan tracking-[1em] mb-4 text-sm md:text-base reveal">WELCOME TO THE EDGE OF REALITY</p>
+            <div class="glitch-wrapper mb-8 reveal" style="transition-delay: 0.2s;">
+                <h1 class="glitch text-5xl md:text-8xl lg:text-9xl font-cinzel" data-text="MELAMPAUI BATAS">MELAMPAUI BATAS</h1>
+            </div>
+            <p class="font-jp text-gray-300 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed mb-10 reveal" style="transition-delay: 0.4s;">
+                Bangkitkan kekuatan di dalam dirimu. Jelajahi dunia di mana sihir kuno dan teknologi cyberpunk berpadu dalam sebuah harmoni kekacauan.
             </p>
-            <a href="#lore" class="hover-target reveal relative px-10 py-4 bg-transparent border-2 border-[var(--primary)] text-[var(--primary)] font-bold tracking-widest uppercase overflow-hidden group">
-                <span class="absolute inset-0 bg-[var(--primary)] transform -translate-x-full skew-x-12 group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></span>
-                <span class="relative z-10 group-hover:text-white transition-colors duration-500">Mulai Petualangan</span>
-            </a>
+            <div class="reveal" style="transition-delay: 0.6s;">
+                <a href="#lore" class="group relative inline-flex items-center justify-center px-8 py-4 font-oswald text-lg font-bold tracking-widest text-white uppercase bg-transparent overflow-hidden border-2 border-neon-pink rounded-none hover:bg-neon-pink transition-all duration-300">
+                    <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>
+                    <span class="relative flex items-center gap-2">Mulai Perjalanan <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i></span>
+                </a>
+            </div>
         </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center reveal floating">
+            <span class="text-xs tracking-widest text-gray-400 mb-2 font-oswald">SCROLL</span>
+            <div class="w-[1px] h-16 bg-gradient-to-b from-neon-pink to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- Lore Section -->
+    <section id="lore" class="relative py-32 bg-dark-bg overflow-hidden z-10">
+        <!-- Cyber Grid Background -->
+        <div class="absolute inset-0 bg-cyber-grid bg-[size:40px_40px] opacity-20"></div>
         
-        <!-- Scroll Down Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce reveal">
-            <span class="text-[10px] tracking-widest text-gray-500 mb-2 font-jp">スクロール</span>
-            <div class="w-[1px] h-12 bg-gradient-to-b from-[var(--secondary)] to-transparent"></div>
-        </div>
-    </header>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-24 reveal">
+                <h2 class="text-4xl md:text-6xl font-cinzel font-bold text-transparent bg-clip-text bg-gradient-to-r from-neon-pink to-neon-cyan mb-4">SEJARAH YANG TERLUPAKAN</h2>
+                <h3 class="text-2xl font-jp text-gray-500 tracking-widest">忘れられた歴史</h3>
+                <div class="w-24 h-1 bg-neon-pink mx-auto mt-6 rounded-full pulsing-glow"></div>
+            </div>
 
-    <!-- Marquee Tape -->
-    <div class="marquee-container shadow-[0_0_20px_var(--primary)]">
-        <div class="marquee-content font-jp">
-            <span>警告: SYSTEM OVERRIDE // </span>
-            <span>WARNING: BEYOND LIMITS // </span>
-            <span>新東京サイバーパンク // </span>
-            <span>DATA BREACH DETECTED // </span>
-            <span>警告: SYSTEM OVERRIDE // </span>
-            <span>WARNING: BEYOND LIMITS // </span>
-            <span>新東京サイバーパンク // </span>
-            <span>DATA BREACH DETECTED // </span>
-        </div>
-        <div class="marquee-content font-jp absolute top-0 left-0">
-            <span>警告: SYSTEM OVERRIDE // </span>
-            <span>WARNING: BEYOND LIMITS // </span>
-            <span>新東京サイバーパンク // </span>
-            <span>DATA BREACH DETECTED // </span>
-            <span>警告: SYSTEM OVERRIDE // </span>
-            <span>WARNING: BEYOND LIMITS // </span>
-            <span>新東京サイバーパンク // </span>
-            <span>DATA BREACH DETECTED // </span>
-        </div>
-    </div>
-
-    <!-- Lore / Story Section -->
-    <section id="lore" class="py-32 relative z-10 bg-[#020202]">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row gap-16 items-center">
-                <div class="md:w-1/2 reveal-left cyber-border">
-                    <h2 class="text-4xl md:text-6xl font-black mb-2 uppercase text-stroke-primary">The Genesis</h2>
-                    <h3 class="text-2xl text-[var(--secondary)] font-jp mb-6">創世記</h3>
-                    <p class="text-gray-400 leading-relaxed mb-6 text-lg text-justify">
-                        Di tahun 2154, batas antara dunia fisik dan digital runtuh. Singularity telah tercapai, melahirkan entitas kecerdasan buatan yang mengatur distrik demi distrik di Neo-Tokyo. Namun, anomali data yang dikenal sebagai <span class="text-[var(--primary)] font-bold">"Kiseki"</span> mulai muncul, memberikan kekuatan supranatural kepada mereka yang beresonansi dengannya.
-                    </p>
-                    <p class="text-gray-400 leading-relaxed text-lg text-justify mb-8">
-                        Faksi-faksi korporat, peretas bawah tanah, dan roh-roh digital kini bertarung untuk memperebutkan kontrol atas Kiseki. Sistem ini melampaui batasan ruang, waktu, dan pemahaman manusia.
-                    </p>
-                    <div class="grid grid-cols-2 gap-4 border-t border-gray-800 pt-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left relative">
+                    <div class="absolute -inset-4 border-2 border-neon-cyan/30 rounded-lg transform rotate-2"></div>
+                    <div class="absolute -inset-4 border-2 border-neon-pink/30 rounded-lg transform -rotate-2"></div>
+                    <img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?auto=format&fit=crop&q=80&w=1000" alt="Shrine" class="relative z-10 w-full h-auto rounded-lg shadow-2xl filter brightness-75 contrast-125 hover:brightness-100 transition-all duration-500">
+                    
+                    <!-- Decorative Elements -->
+                    <div class="absolute -bottom-10 -right-10 text-9xl text-white/5 font-jp z-0 select-none">神</div>
+                </div>
+                
+                <div class="space-y-8 reveal-right">
+                    <div class="flex items-start gap-4">
+                        <div class="text-neon-pink text-3xl pt-1"><i class="fa-brands fa-d-and-d"></i></div>
                         <div>
-                            <div class="text-4xl font-black text-white counter" data-target="2154">0</div>
-                            <div class="text-sm text-gray-500 uppercase tracking-wider">Tahun Kejadian</div>
-                        </div>
-                        <div>
-                            <div class="text-4xl font-black text-[var(--secondary)] counter" data-target="99.9">0</div>
-                            <div class="text-sm text-gray-500 uppercase tracking-wider">Tingkat Sinkronisasi %</div>
+                            <h4 class="text-2xl font-oswald text-white mb-2">ERA KEHANCURAN (崩壊の時代)</h4>
+                            <p class="text-gray-400 font-jp leading-relaxed">Ribuan tahun lalu, dimensi bersinggungan. Roh-roh kuno (Yokai) dari dunia bawah bangkit, mengakhiri peradaban modern. Tersisa hanyalah distrik-distrik neon yang dibangun di atas reruntuhan kuil suci.</p>
                         </div>
                     </div>
-                </div>
-                <div class="md:w-1/2 relative reveal-right">
-                    <!-- Complex Abstract Anime Art Structure -->
-                    <div class="relative w-full aspect-square max-w-md mx-auto">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-[var(--primary)] to-[var(--secondary)] rounded-full blur-3xl opacity-30 animate-pulse"></div>
-                        <svg viewBox="0 0 200 200" class="w-full h-full relative z-10 animate-[spin_60s_linear_infinite]">
-                            <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4 4" />
-                            <circle cx="100" cy="100" r="70" fill="none" stroke="var(--primary)" stroke-width="2" stroke-dasharray="10 20" />
-                            <circle cx="100" cy="100" r="50" fill="none" stroke="var(--secondary)" stroke-width="1" />
-                            <path d="M100 10 L100 190 M10 100 L190 100" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                            <polygon points="100,20 170,100 100,180 30,100" fill="none" stroke="var(--gold)" stroke-width="1" stroke-dasharray="5 5" class="animate-[spin_20s_linear_infinite_reverse]" style="transform-origin: center;"/>
-                        </svg>
-                        <div class="absolute inset-0 flex items-center justify-center z-20">
-                            <span class="text-8xl font-jp text-white neon-glow">魂</span>
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="text-neon-cyan text-3xl pt-1"><i class="fa-solid fa-khanda"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-oswald text-white mb-2">KEBANGKITAN SHINIGAMI (死神の覚醒)</h4>
+                            <p class="text-gray-400 font-jp leading-relaxed">Untuk melawan kegelapan, segelintir manusia terpilih mengikat kontrak dengan dewa kematian. Memadukan pedang katana yang ditempa dengan energi plasma, mereka menjadi pelindung terakhir umat manusia.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="text-gold text-3xl pt-1"><i class="fa-solid fa-dragon"></i></div>
+                        <div>
+                            <h4 class="text-2xl font-oswald text-white mb-2">NAGA CYBERNETIC (サイバー・ドラゴン)</h4>
+                            <p class="text-gray-400 font-jp leading-relaxed">Organisasi bayaran yang mengontrol aliran energi spiritual (Chi-Net). Mereka menanamkan implan cybernetic ke dalam monster mistis untuk dijadikan senjata pemusnah massal.</p>
                         </div>
                     </div>
                 </div>
@@ -364,444 +553,849 @@
         </div>
     </section>
 
-    <!-- Character Roster Section (Data populated via JS for massive length) -->
-    <section id="roster" class="py-32 relative bg-black">
-        <div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, #00f0ff 2px, #00f0ff 4px); background-size: 100% 4px;"></div>
-        <div class="max-w-7xl mx-auto px-6 relative z-10">
+    <!-- Character Roster (Interactive 3D Cards generated by JS) -->
+    <section id="roster" class="relative py-32 bg-void z-10">
+        <!-- Giant text background -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none z-0 opacity-10">
+            <span class="text-[15vw] font-black text-transparent text-stroke font-oswald whitespace-nowrap inline-block animate-[slideLeft_30s_linear_infinite]">
+                CHARACTERS キャラクター HEROES 英雄 VILLAINS 悪役
+            </span>
+        </div>
+        <style>
+            @keyframes slideLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        </style>
+
+        <div class="max-w-screen-2xl mx-auto px-4 relative z-10">
             <div class="text-center mb-20 reveal">
-                <h2 class="text-5xl md:text-7xl font-black uppercase text-white mb-2">Operatives</h2>
-                <div class="h-1 w-24 bg-[var(--primary)] mx-auto mb-4"></div>
-                <h3 class="text-xl text-gray-500 tracking-[0.3em] font-jp">キャラクター名簿</h3>
+                <h2 class="text-4xl md:text-5xl font-cinzel font-bold text-white mb-4">DAFTAR PAHLAWAN & IBLIS</h2>
+                <h3 class="text-xl font-jp text-neon-pink tracking-[0.5em]">HEROES AND DEMONS</h3>
+            </div>
+
+            <!-- Grid Kontainer untuk Karakter (Diisi via JS) -->
+            <div id="character-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Cards injected here -->
             </div>
             
-            <!-- Grid Container for Dynamic Characters -->
-            <div id="character-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <!-- JS Will Inject Thousands of lines of HTML equivalent here -->
-            </div>
-            
-            <div class="text-center mt-16 reveal">
-                <button id="load-more-btn" class="hover-target px-8 py-3 bg-[var(--dark)] border border-gray-700 text-gray-300 hover:text-white hover:border-[var(--secondary)] hover:shadow-[0_0_15px_var(--secondary)] transition-all uppercase tracking-widest text-sm">
-                    Load Additional Data [Decrypting...]
+            <div class="mt-16 text-center reveal">
+                <button class="px-8 py-3 border border-white/20 hover:border-neon-cyan hover:bg-neon-cyan/10 text-white font-oswald tracking-widest transition-all duration-300 group">
+                    MUAT LEBIH BANYAK <i class="fa-solid fa-rotate-right ml-2 group-hover:rotate-180 transition-transform duration-500"></i>
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Episodes Database -->
-    <section id="episodes" class="py-32 relative bg-[#050505]">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="reveal mb-16 flex flex-col md:flex-row justify-between items-end border-b border-gray-800 pb-6">
-                <div>
-                    <h2 class="text-4xl md:text-6xl font-black uppercase text-white">Database Log</h2>
-                    <h3 class="text-lg text-[var(--primary)] tracking-widest font-jp mt-2">エピソードログ</h3>
+    <!-- Stats / Skill Radar (Canvas/Complex UI) -->
+    <section class="py-32 bg-dark-bg relative border-y border-white/10 z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-left">
+                    <h2 class="text-4xl font-cinzel text-white mb-6">SISTEM KEKUATAN <span class="text-neon-cyan">(POWER SYSTEM)</span></h2>
+                    <p class="text-gray-400 font-jp mb-8 text-lg">Dalam dunia ini, kekuatan tidak hanya diukur dari kekuatan fisik, tetapi dari sinkronisasi jiwa dengan energi Chi-Net. Berikut adalah parameter standar dari seorang prajurit kelas S.</p>
+                    
+                    <div class="space-y-6">
+                        <!-- Stat Bars -->
+                        <div class="stat-group">
+                            <div class="flex justify-between text-sm font-oswald mb-2">
+                                <span class="text-neon-pink">KENJUTSU (剣術)</span>
+                                <span class="text-white">95%</span>
+                            </div>
+                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-blood to-neon-pink h-full w-[95%] shadow-[0_0_10px_#ff2a6d]"></div>
+                            </div>
+                        </div>
+                        <div class="stat-group">
+                            <div class="flex justify-between text-sm font-oswald mb-2">
+                                <span class="text-neon-cyan">CYBER-SYNCH (サイバー同期)</span>
+                                <span class="text-white">88%</span>
+                            </div>
+                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-blue-900 to-neon-cyan h-full w-[88%] shadow-[0_0_10px_#05d9e8]"></div>
+                            </div>
+                        </div>
+                        <div class="stat-group">
+                            <div class="flex justify-between text-sm font-oswald mb-2">
+                                <span class="text-gold">SPIRITUAL PRESSURE (霊圧)</span>
+                                <span class="text-white">MAX</span>
+                            </div>
+                            <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                <div class="bg-gradient-to-r from-yellow-700 to-gold h-full w-full shadow-[0_0_10px_#ffd700] pulsing-glow"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-gray-500 font-mono mt-4 md:mt-0">
-                    STATUS: <span class="text-green-500">ONLINE</span> | ALIGNMENT: 100%
-                </div>
-            </div>
 
-            <div class="bg-[#0a0a0f] border border-gray-800 rounded-lg overflow-hidden reveal" id="episode-list">
-                <!-- Javascript will populate massive list -->
+                <div class="reveal-right relative flex justify-center items-center h-[400px]">
+                    <!-- Abstract Magic Circle Animation -->
+                    <div class="absolute w-[400px] h-[400px] rounded-full border border-neon-cyan/20 magic-circle"></div>
+                    <div class="absolute w-[350px] h-[350px] rounded-full border-2 border-dashed border-neon-pink/40 magic-circle-reverse"></div>
+                    <div class="absolute w-[300px] h-[300px] rounded-full border border-gold/30 magic-circle" style="animation-duration: 10s;"></div>
+                    
+                    <!-- Hexagon Center -->
+                    <div class="relative w-48 h-48 bg-void border border-neon-cyan flex justify-center items-center transform rotate-45 border-neon shadow-[0_0_30px_rgba(5,217,232,0.3)]">
+                        <div class="transform -rotate-45 text-center">
+                            <i class="fa-solid fa-atom text-5xl text-white mb-2 pulsing-glow"></i>
+                            <div class="font-oswald text-neon-cyan text-xl">SOUL CORE</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Visual Gallery (Masonry) -->
-    <section id="gallery" class="py-32 bg-black relative">
-        <div class="kanji-bg top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.02] text-[40vw]">美</div>
+    <!-- Massive Masonry Gallery -->
+    <section id="gallery" class="py-32 bg-void relative z-10">
+        <div class="text-center mb-16 reveal">
+            <h2 class="text-4xl md:text-5xl font-cinzel font-bold text-white mb-2">GALERI INGATAN</h2>
+            <p class="font-jp text-gray-500 tracking-widest">MEMORY ARCHIVES</p>
+        </div>
         
-        <div class="max-w-[1400px] mx-auto px-4 relative z-10">
-            <div class="text-center mb-16 reveal">
-                <h2 class="text-5xl font-black uppercase text-stroke-primary">Visual Memory</h2>
-                <h3 class="text-gray-500 tracking-widest mt-2">アーカイブ</h3>
+        <div class="px-4 max-w-[1600px] mx-auto">
+            <!-- Colums for Masonry effect -->
+            <div class="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4" id="masonry-gallery">
+                <!-- Images injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Horizontal Scrolling Timeline (Conceptually handled by native scroll with CSS) -->
+    <section id="timeline" class="py-32 bg-dark-bg relative overflow-hidden z-10">
+        <div class="max-w-7xl mx-auto px-4 text-center mb-20 reveal">
+            <h2 class="text-4xl font-cinzel text-white">CHRONICLES OF APOCALYPSE</h2>
+        </div>
+
+        <div class="relative max-w-5xl mx-auto px-4">
+            <!-- Vertical Line -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-gradient-to-b from-neon-pink via-neon-cyan to-transparent"></div>
+
+            <div class="space-y-24" id="timeline-container">
+                <!-- Events generated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive World Map -->
+    <section id="world-map" class="py-32 bg-black relative border-t border-neon-cyan/20 z-10">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558486012-817176f84c6d?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-10 filter grayscale"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10 text-center">
+            <div class="mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-cinzel text-white mb-2">PETA WILAYAH NEO-TOKYO</h2>
+                <p class="font-jp text-neon-cyan tracking-[0.5em] text-sm uppercase">Pilih Zona Misi Anda</p>
             </div>
 
-            <div class="gallery-grid" id="masonry-gallery">
-                <!-- Javascript will inject massive image grid -->
+            <!-- Map Container -->
+            <div class="relative w-full max-w-4xl mx-auto h-[400px] md:h-[600px] border border-white/20 bg-dark-bg/50 backdrop-blur-sm overflow-hidden group reveal">
+                <!-- Grid Overlay -->
+                <div class="absolute inset-0 bg-cyber-grid bg-[size:50px_50px] opacity-30"></div>
+                
+                <!-- SVG Connections -->
+                <svg class="absolute inset-0 w-full h-full pointer-events-none" id="map-lines">
+                    <path d="M 20% 30% L 50% 50% L 80% 40% L 70% 80% L 30% 70% Z" stroke="rgba(5, 217, 232, 0.3)" stroke-width="2" fill="none" stroke-dasharray="5,5" class="animate-[dash_20s_linear_infinite]"/>
+                </svg>
+                <style>@keyframes dash { to { stroke-dashoffset: 1000; } }</style>
+
+                <!-- Dynamic Nodes container -->
+                <div id="map-nodes-container" class="absolute inset-0"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Boss Raid Live Event -->
+    <section id="raid" class="py-32 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blood/20 via-black to-black relative border-y border-blood/30 z-10 overflow-hidden">
+        <!-- Visual effects -->
+        <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1508615039623-a25605d2b022?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center blend-overlay"></div>
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-50 z-0"></div>
+
+        <div class="max-w-5xl mx-auto px-4 relative z-10 text-center">
+            <div class="inline-block px-4 py-1 border border-red-500 bg-red-900/30 text-red-500 font-mono text-sm mb-6 animate-pulse">! LIVE RAID EVENT IN PROGRESS !</div>
+            <h2 class="text-5xl md:text-7xl font-cinzel text-white mb-2 text-shadow-lg shadow-red-500">OROCHI PRIME</h2>
+            <p class="font-jp text-gray-400 mb-12">Level 999 World Boss | Target Global: Kalahkan sebelum server reset.</p>
+
+            <!-- Raid Visual / Hit Area -->
+            <div class="relative w-64 h-64 mx-auto mb-12 cursor-crosshair group" id="boss-hitbox" onclick="attackBoss(event)">
+                <div class="absolute inset-0 bg-blood/20 rounded-full filter blur-3xl group-active:bg-white/50 transition-colors"></div>
+                <img src="https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=500" alt="Orochi" class="w-full h-full object-cover rounded-full border-4 border-blood shadow-[0_0_50px_#8a0303] group-active:scale-95 transition-transform duration-75 grayscale hover:grayscale-0">
+            </div>
+
+            <!-- Health Bar -->
+            <div class="mb-4 flex justify-between font-oswald text-xl tracking-widest">
+                <span class="text-red-500">HP (生命力)</span>
+                <span class="text-white" id="boss-hp-text">10,000,000 / 10,000,000</span>
+            </div>
+            <div class="hp-bar-container mb-8">
+                <div class="hp-bar-fill" id="boss-hp-fill" style="width: 100%;"></div>
+            </div>
+
+            <button onclick="autoAttackBoss()" id="auto-atk-btn" class="px-8 py-4 bg-transparent border-2 border-white/20 text-white font-oswald hover:border-red-500 hover:bg-red-900/30 hover:shadow-[0_0_20px_red] transition-all uppercase tracking-widest">
+                Aktifkan Auto-Attack Protocol <i class="fa-solid fa-crosshairs ml-2"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Gacha / Summoning System -->
+    <section id="gacha" class="py-32 bg-dark-bg relative z-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-cinzel text-transparent bg-clip-text bg-gradient-to-r from-gold via-white to-gold mb-2">ALTAR PEMANGGILAN</h2>
+                <p class="font-jp text-gray-400 tracking-widest">SUMMONING POOL - "ECHOES OF THE PAST"</p>
+                
+                <div class="mt-8 flex justify-center gap-4">
+                    <button onclick="summon(1)" class="px-6 py-3 bg-white/5 border border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black font-oswald transition-all">
+                        SUMMON x1 (300 <i class="fa-brands fa-ethereum text-xs"></i>)
+                    </button>
+                    <button onclick="summon(10)" class="px-8 py-3 bg-neon-pink text-white font-oswald font-bold hover:shadow-[0_0_30px_#ff2a6d] hover:bg-white hover:text-neon-pink transition-all transform hover:scale-105">
+                        SUMMON x10 (3000 <i class="fa-brands fa-ethereum text-xs"></i>)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gacha Results Grid -->
+            <div id="gacha-results" class="grid grid-cols-2 md:grid-cols-5 gap-4 perspective-1000 min-h-[300px]">
+                <!-- Cards injected by JS -->
+                <div class="col-span-full flex items-center justify-center text-gray-600 font-oswald border-2 border-dashed border-gray-800 rounded-lg p-12">
+                    AREA KOSONG - LAKUKAN PEMANGGILAN UNTUK MELIHAT HASIL
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Armory / Black Market -->
+    <section id="armory" class="py-32 bg-void relative z-10 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 reveal">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-cinzel text-white mb-2">PASAR GELAP NEON</h2>
+                    <p class="font-jp text-neon-pink tracking-widest">BLACK MARKET ARMORY</p>
+                </div>
+                <div class="mt-4 md:mt-0 font-mono text-neon-cyan text-sm bg-neon-cyan/10 px-4 py-2 border border-neon-cyan/30">
+                    KREDIT ANDA: <span id="user-credits">99,999,999</span> C
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="shop-container">
+                <!-- Items injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Dojo / Contact -->
+    <section id="dojo" class="py-32 bg-black relative border-t border-neon-pink/30 z-10">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1614315585028-569b93540e1b?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center opacity-20 filter grayscale"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 relative z-10">
+            <div class="bg-void/80 backdrop-blur-lg border border-white/10 p-8 md:p-12 shadow-[0_0_50px_rgba(255,42,109,0.1)] reveal">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-5xl font-cinzel text-white mb-2">BERGABUNG DENGAN GUILD</h2>
+                    <p class="font-jp text-neon-pink">Daftarkan jiwamu ke dalam jaringan (Enter the network)</p>
+                </div>
+
+                <form class="space-y-6" onsubmit="event.preventDefault(); showSysModal('SINKRONISASI BERHASIL', 'Koneksi Neural Terjalin. Selamat datang di Jaringan Shinigami, Operator. Persiapkan dirimu untuk pertempuran sesungguhnya.');">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="group">
+                            <label class="block text-xs font-oswald text-gray-500 mb-2 uppercase tracking-widest group-hover:text-neon-cyan transition-colors">Nama Panggilan (Alias)</label>
+                            <input type="text" class="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-neon-cyan focus:bg-white/10 transition-all font-jp" required>
+                        </div>
+                        <div class="group">
+                            <label class="block text-xs font-oswald text-gray-500 mb-2 uppercase tracking-widest group-hover:text-neon-cyan transition-colors">Kode Genetik (Email)</label>
+                            <input type="email" class="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-neon-cyan focus:bg-white/10 transition-all font-jp" required>
+                        </div>
+                    </div>
+                    
+                    <div class="group">
+                        <label class="block text-xs font-oswald text-gray-500 mb-2 uppercase tracking-widest group-hover:text-neon-pink transition-colors">Pilih Kelas (Class)</label>
+                        <select class="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-neon-pink transition-all font-jp appearance-none">
+                            <option value="samurai" class="bg-dark-bg">Samurai (Physical DPS)</option>
+                            <option value="ninja" class="bg-dark-bg">Shinobi (Assassin/Stealth)</option>
+                            <option value="onmyoji" class="bg-dark-bg">Onmyoji (Magic/Support)</option>
+                            <option value="cyborg" class="bg-dark-bg">Cyborg (Tank/Heavy)</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-xs font-oswald text-gray-500 mb-2 uppercase tracking-widest group-hover:text-white transition-colors">Pesan Transmisi</label>
+                        <textarea rows="4" class="w-full bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-white transition-all font-jp resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-neon-pink text-white font-oswald font-bold tracking-widest text-lg py-4 hover:bg-neon-cyan transition-colors duration-500 shadow-[0_0_20px_rgba(255,42,109,0.4)] hover:shadow-[0_0_30px_rgba(5,217,232,0.6)]">
+                        SINKRONISASI <i class="fa-solid fa-satellite-dish ml-2"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer-clip pt-32 pb-10 text-center md:text-left relative z-20 mt-20">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 border-b border-gray-800 pb-16">
-            <div class="md:col-span-2">
-                <a href="#" class="text-4xl font-bold font-serif-custom text-white hover-target inline-block mb-6">
-                    Kiseki<span class="text-[var(--primary)]">.</span>
-                </a>
-                <p class="text-gray-500 text-sm max-w-sm mb-8 leading-relaxed">
-                    Proyek eksperimental melebihi batas kode standar. Menggabungkan estetika cyberpunk, tradisi Jepang, dan animasi web tingkat lanjut.
-                </p>
-                <div class="flex space-x-4 justify-center md:justify-start">
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-[var(--primary)] transition-colors hover-target">
-                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center hover:bg-[var(--secondary)] transition-colors hover-target">
-                        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                    </a>
+    <footer class="bg-void border-t border-white/5 pt-20 pb-10 relative z-10 overflow-hidden">
+        <!-- Floating Kanji Background -->
+        <div class="absolute -right-20 -bottom-20 text-[20rem] font-jp text-white/5 select-none pointer-events-none">終</div>
+
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i class="fa-solid fa-yin-yang text-neon-pink text-3xl"></i>
+                        <span class="font-cinzel font-bold text-2xl tracking-widest text-white">SHINIGAMI</span>
+                    </div>
+                    <p class="text-gray-500 font-jp leading-relaxed max-w-sm mb-6">
+                        Sebuah entitas digital yang melampaui batas realitas. Dibangun dengan kode murni dan tekad baja untuk menguasai jaringan.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-neon-pink hover:scale-110 transition-all"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-neon-cyan hover:scale-110 transition-all"><i class="fa-brands fa-discord"></i></a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-gold hover:scale-110 transition-all"><i class="fa-brands fa-github"></i></a>
+                    </div>
                 </div>
-            </div>
-            <div>
-                <h4 class="text-white font-bold tracking-widest uppercase mb-6">Database Links</h4>
-                <ul class="space-y-3 text-sm text-gray-500">
-                    <li><a href="#" class="hover:text-[var(--primary)] transition-colors hover-target">Main Terminal</a></li>
-                    <li><a href="#" class="hover:text-[var(--primary)] transition-colors hover-target">Operative Profiles</a></li>
-                    <li><a href="#" class="hover:text-[var(--primary)] transition-colors hover-target">Archived Records</a></li>
-                    <li><a href="#" class="hover:text-[var(--primary)] transition-colors hover-target">System Status</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="text-white font-bold tracking-widest uppercase mb-6">Initialize Sync</h4>
-                <form class="flex flex-col space-y-4" onsubmit="event.preventDefault()">
-                    <input type="email" placeholder="ENTER NEURAL ID..." class="bg-gray-900 border border-gray-700 text-white px-4 py-2 focus:outline-none focus:border-[var(--secondary)] font-mono text-xs hover-target">
-                    <button class="bg-[var(--primary)] text-white px-4 py-2 font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-colors text-sm hover-target">
-                        Subscribe
-                    </button>
-                </form>
-            </div>
-        </div>
-        <div class="mt-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto px-6 text-xs text-gray-600 font-mono">
-            <p>&copy; 2154 KISEKI NO SEKAI PROJECT. ALL RIGHTS RESERVED.</p>
-            <p class="mt-2 md:mt-0">SECURE CONNECTION: ENCRYPTED // TERMINAL 42</p>
-        </div>
-    </footer>
-
-    <!-- Massive Javascript Implementation -->
-    <script>
-        // 1. Custom Cursor Logic
-        const cursor = document.getElementById('cursor');
-        const cursorTrail = document.getElementById('cursor-trail');
-        
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            setTimeout(() => {
-                cursorTrail.style.left = e.clientX + 'px';
-                cursorTrail.style.top = e.clientY + 'px';
-            }, 50);
-        });
-
-        // 2. Preloader Logic
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                preloader.style.opacity = '0';
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                    initAnimations();
-                }, 1000);
-            }, 2000); // Artificial delay for aesthetic
-        });
-
-        // 3. Scroll Reveal & Counters Logic
-        const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-        const counters = document.querySelectorAll('.counter');
-        let counterActivated = false;
-
-        function animateCounters() {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const duration = 2000; // 2 seconds
-                const increment = target / (duration / 16); // 60fps
                 
-                let current = 0;
-                const updateCounter = () => {
-                    current += increment;
-                    if (current < target) {
-                        counter.innerText = (target % 1 !== 0) ? current.toFixed(1) : Math.ceil(current);
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCounter();
-            });
-        }
-
-        function checkScroll() {
-            const windowHeight = window.innerHeight;
-            const elementVisible = 150;
-
-            reveals.forEach((reveal) => {
-                const elementTop = reveal.getBoundingClientRect().top;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveal.classList.add('active');
-                    
-                    // Check if counter section is revealed
-                    if(reveal.classList.contains('cyber-border') && !counterActivated) {
-                        counterActivated = true;
-                        animateCounters();
-                    }
-                }
-            });
-
-            // Navbar Glass effect on scroll
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('bg-black/80', 'shadow-lg', 'shadow-[var(--primary)]/20');
-                navbar.classList.remove('py-4');
-                navbar.classList.add('py-2');
-            } else {
-                navbar.classList.remove('bg-black/80', 'shadow-lg', 'shadow-[var(--primary)]/20');
-                navbar.classList.add('py-4');
-                navbar.classList.remove('py-2');
-            }
-        }
-
-        window.addEventListener('scroll', checkScroll);
-        
-        function initAnimations() {
-            checkScroll(); // Trigger initial check
-        }
-
-        // 4. Data Generation for Massive HTML Content Injection
-        // Character Database - Generating large amount of fake data
-        const characterGrid = document.getElementById('character-grid');
-        const firstNames = ["Akira", "Shin", "Rei", "Kusanagi", "Motoko", "Tetsuo", "Kaneda", "Kael", "Nova", "Zero", "Jin", "Asuka", "Ryu", "Ken", "Sakura", "Mai", "Yuki", "Hideo", "Sora", "Riku"];
-        const lastNames = ["Yamamoto", "Sato", "Suzuki", "Takahashi", "Tanaka", "Watanabe", "Ito", "Nakamura", "Kobayashi", "Kato", "Cyber", "Null", "Void", "Crimson", "Phantom"];
-        const classes = ["Assault", "Netrunner", "Samurai", "Sniper", "Medic", "Heavy", "Ghost", "Ninja"];
-        
-        // Advanced Procedural Generation for DOM Bloat and Detail
-        const characters = Array.from({length: 40}).map((_, i) => {
-            const isRare = Math.random() > 0.8;
-            return {
-                id: `OP-${1000 + i}`,
-                name: `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`,
-                class: classes[Math.floor(Math.random() * classes.length)],
-                img: `https://picsum.photos/seed/cyber${i}/400/500`, // Placeholder
-                stats: {
-                    str: Math.floor(Math.random() * 100),
-                    agi: Math.floor(Math.random() * 100),
-                    int: Math.floor(Math.random() * 100),
-                    syn: Math.floor(Math.random() * 100)
-                },
-                kanji: ["火","水","風","土","雷","光","闇","心","魂"][Math.floor(Math.random() * 9)],
-                rare: isRare
-            }
-        });
-
-        function createCharacterCard(char) {
-            const color = char.rare ? 'var(--gold)' : 'var(--secondary)';
-            return `
-            <div class="character-card reveal hover-target" onmouseenter="animateStats(this)">
-                <div class="absolute top-4 right-4 text-4xl font-jp opacity-50 text-[${color}] z-10 neon-glow">${char.kanji}</div>
-                <div class="absolute top-4 left-4 bg-black/80 px-2 py-1 text-xs font-mono text-white border border-[${color}] z-10">${char.id}</div>
-                <div class="char-img-container">
-                    <img src="${char.img}" alt="${char.name}" class="char-img" loading="lazy">
-                    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent"></div>
+                <div>
+                    <h4 class="font-oswald text-white tracking-widest text-lg mb-6 border-l-2 border-neon-pink pl-3">SISTEM Navigasi</h4>
+                    <ul class="space-y-3 font-jp text-gray-400">
+                        <li><a href="#" class="hover:text-neon-cyan transition-colors">>> Terminal Utama</a></li>
+                        <li><a href="#" class="hover:text-neon-cyan transition-colors">>> Arsip Data</a></li>
+                        <li><a href="#" class="hover:text-neon-cyan transition-colors">>> Pasar Gelap</a></li>
+                        <li><a href="#" class="hover:text-neon-cyan transition-colors">>> Papan Peringkat</a></li>
+                    </ul>
                 </div>
-                <div class="p-6 relative z-10 bg-black">
-                    <h3 class="text-2xl font-bold uppercase mb-1 ${char.rare ? 'text-[var(--gold)]' : 'text-white'}">${char.name}</h3>
-                    <p class="text-[var(--primary)] text-sm tracking-widest uppercase mb-4">${char.class}</p>
-                    
-                    <div class="space-y-3">
-                        <div class="char-stats">
-                            <span class="text-xs text-gray-400">STR</span>
-                            <span class="text-xs text-white font-mono">${char.stats.str}</span>
-                        </div>
-                        <div class="stat-bar"><div class="stat-fill" data-width="${char.stats.str}%" style="background:${char.rare?'var(--gold)':'var(--secondary)'}"></div></div>
-                        
-                        <div class="char-stats">
-                            <span class="text-xs text-gray-400">AGI</span>
-                            <span class="text-xs text-white font-mono">${char.stats.agi}</span>
-                        </div>
-                        <div class="stat-bar"><div class="stat-fill" data-width="${char.stats.agi}%" style="background:${char.rare?'var(--gold)':'var(--secondary)'}"></div></div>
-                        
-                        <div class="char-stats">
-                            <span class="text-xs text-gray-400">SYNC</span>
-                            <span class="text-xs text-white font-mono">${char.stats.syn}%</span>
-                        </div>
-                        <div class="stat-bar"><div class="stat-fill" data-width="${char.stats.syn}%" style="background:var(--primary)"></div></div>
+
+                <div>
+                    <h4 class="font-oswald text-white tracking-widest text-lg mb-6 border-l-2 border-neon-cyan pl-3">PERINGATAN</h4>
+                    <p class="text-gray-500 font-jp text-sm mb-4">Akses tidak sah ke dalam server ini akan memicu protokol pertahanan neural. Tetap pada jalur yang diterangi.</p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-900/30 border border-red-500/50 text-red-400 text-xs font-mono">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> SYSTEM SECURE
                     </div>
                 </div>
             </div>
-            `;
-        }
 
-        // Render initially 8 characters
-        characterGrid.innerHTML = characters.slice(0, 8).map(createCharacterCard).join('');
-        
-        let loadedChars = 8;
-        document.getElementById('load-more-btn').addEventListener('click', function() {
-            this.innerText = "DECRYPTING...";
+            <div class="border-t border-white/10 pt-8 text-center flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-600 font-jp text-sm">© 2026 Shinigami Protocol. All rights reserved.</p>
+                <div class="text-gray-600 font-mono text-xs">
+                    ENCRYPTED CONNECTION // LATENCY: 12ms // SERVER: TOKYO-NEO
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MASSIVE JAVASCRIPT LOGIC -->
+    <script>
+        // 1. Remove Loader
+        window.addEventListener('load', () => {
             setTimeout(() => {
-                const nextBatch = characters.slice(loadedChars, loadedChars + 8);
-                if (nextBatch.length > 0) {
-                    characterGrid.innerHTML += nextBatch.map(createCharacterCard).join('');
-                    loadedChars += 8;
-                    // Trigger reflow/intersection observer for new elements
-                    const newReveals = document.querySelectorAll('.reveal:not(.active)');
-                    setTimeout(() => {
-                        newReveals.forEach(el => el.classList.add('active'));
-                    }, 100);
-                    this.innerText = "Load Additional Data [Decrypting...]";
-                } else {
-                    this.innerText = "DATABASE FULLY EXTRACTED";
-                    this.disabled = true;
-                    this.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-            }, 800);
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    initAnimations(); // Trigger initial animations
+                }, 1000);
+            }, 2000);
         });
 
-        // Hover animation for stats
-        window.animateStats = function(card) {
-            const fills = card.querySelectorAll('.stat-fill');
-            fills.forEach(fill => {
-                fill.style.width = fill.getAttribute('data-width');
-            });
-        }
-
-        // Episode List Generation (creating 24 episodes dynamically)
-        const epList = document.getElementById('episode-list');
-        const epTitles = [
-            "Awakening of the Digital Soul", "Neon Rain over Sector 4", "Ghost in the Machine", "Blade of the Fallen",
-            "Resonance of Kiseki", "Cybernetic Overdrive", "Shadows of the Past", "Singularity Approaching",
-            "Memories of a Dead World", "The Hacker's Gambit", "Neural Interface Alpha", "Blood and Circuitry",
-            "Echoes of Tokyo", "Protocol Override", "The Final Proxy", "Ascension"
-        ];
-
-        let epHTML = '';
-        for(let i=1; i<=16; i++) {
-            const title = epTitles[i-1];
-            const date = `2154.0${Math.ceil(i/4)}.${(i*3)%28 + 1 < 10 ? '0':''}${(i*3)%28 + 1}`;
-            epHTML += `
-            <div class="ep-row hover-target">
-                <div class="ep-num">${i < 10 ? '0'+i : i}</div>
-                <div>
-                    <h4 class="text-white font-bold text-lg uppercase tracking-wide">${title}</h4>
-                    <p class="text-xs text-gray-500 font-mono mt-1">BROADCAST_DATE: ${date} // ENCRYPTION: LEVEL_${Math.ceil(Math.random()*5)}</p>
-                </div>
-                <div class="hidden md:block">
-                    <button class="px-4 py-1 text-xs border border-[var(--secondary)] text-[var(--secondary)] hover:bg-[var(--secondary)] hover:text-black transition-colors rounded-full font-bold">
-                        PLAY DATA
-                    </button>
-                </div>
-            </div>
-            `;
-        }
-        epList.innerHTML = epHTML;
-
-        // Masonry Gallery Generation
-        const gallery = document.getElementById('masonry-gallery');
-        const layouts = ['', 'large', 'wide', 'tall', '', 'tall', 'wide', '', 'large', '', '', 'wide'];
-        const tags = ["CYBER", "NEON", "TOKYO", "MECHA", "NINJA", "GEISHA", "KATANA", "CITY", "SKYLINE", "HACKER"];
-        
-        let galleryHTML = '';
-        for(let i=0; i<layouts.length; i++) {
-            const tag = tags[Math.floor(Math.random() * tags.length)];
-            const jpText = ["電脳", "都市", "忍者", "侍", "ネオン", "未来"][Math.floor(Math.random() * 6)];
-            galleryHTML += `
-            <div class="gallery-item ${layouts[i]} reveal hover-target">
-                <img src="https://picsum.photos/seed/animeart${i}/800/800" alt="Gallery Image" class="gallery-img" loading="lazy">
-                <div class="gallery-overlay">
-                    <span class="text-3xl font-jp text-white mb-2 font-bold">${jpText}</span>
-                    <span class="text-sm tracking-[0.2em] font-bold text-white border border-white px-3 py-1">FILE: ${tag}_${i}</span>
-                </div>
-            </div>
-            `;
-        }
-        gallery.innerHTML = galleryHTML;
-
-        // 5. Complex Canvas Particle System (Sakura + Digital Rain mix)
-        const canvas = document.getElementById('canvas-bg');
+        // 2. Sakura Particle System (Canvas)
+        const canvasContainer = document.getElementById('canvas-container');
+        const canvas = document.createElement('canvas');
+        canvasContainer.appendChild(canvas);
         const ctx = canvas.getContext('2d');
+        
         let width, height;
         let particles = [];
         
         function resizeCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
         }
+        
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        class Particle {
+        class Petal {
             constructor() {
-                this.reset();
-            }
-            
-            reset() {
-                this.type = Math.random() > 0.7 ? 'digital' : 'sakura';
                 this.x = Math.random() * width;
-                this.y = Math.random() * height - height; // Start above screen
-                this.size = Math.random() * 3 + 1;
-                this.speedY = Math.random() * 2 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 1;
-                this.angle = Math.random() * Math.PI * 2;
-                this.spin = (Math.random() - 0.5) * 0.1;
-                
-                // Digital specific
-                this.char = ["0", "1", "ア", "イ", "ウ", "エ", "オ", "カ", "キ", "ク"][Math.floor(Math.random() * 10)];
-                this.alpha = Math.random() * 0.5 + 0.1;
+                this.y = Math.random() * height - height;
+                this.w = 10 + Math.random() * 15;
+                this.h = 10 + Math.random() * 10;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 + 1;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2 - 1;
+                // Mix of pink sakura and cyan digital rain
+                this.type = Math.random() > 0.8 ? 'cyber' : 'sakura';
             }
-            
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX + Math.sin(this.angle) * 0.5; // Sway
-                this.angle += this.spin;
-                
-                if (this.y > height) {
-                    this.reset();
-                    this.y = -10;
-                }
-            }
-            
+
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
+                ctx.rotate(this.rotation * Math.PI / 180);
                 
                 if (this.type === 'sakura') {
-                    // Draw Sakura petal shape
-                    ctx.fillStyle = `rgba(255, 0, 85, ${this.alpha})`;
+                    ctx.fillStyle = `rgba(255, 183, 197, ${this.opacity})`;
                     ctx.beginPath();
                     ctx.moveTo(0, 0);
-                    ctx.bezierCurveTo(this.size, -this.size, this.size*2, 0, 0, this.size*2);
-                    ctx.bezierCurveTo(-this.size*2, 0, -this.size, -this.size, 0, 0);
+                    ctx.bezierCurveTo(this.w / 2, -this.h / 2, this.w, 0, this.w / 2, this.h);
+                    ctx.bezierCurveTo(0, this.h / 2, -this.w / 2, -this.h / 2, 0, 0);
                     ctx.fill();
                 } else {
-                    // Draw digital rain char
-                    ctx.fillStyle = `rgba(0, 240, 255, ${this.alpha})`;
-                    ctx.font = `${this.size * 3}px monospace`;
-                    ctx.fillText(this.char, 0, 0);
+                    ctx.fillStyle = `rgba(5, 217, 232, ${this.opacity})`;
+                    ctx.fillRect(0, 0, 2, this.h * 1.5);
                 }
                 
                 ctx.restore();
             }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                // Wavy motion
+                this.x += Math.sin(this.y * 0.01) * 0.5;
+
+                if (this.y > height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * width;
+                }
+                if (this.x > width + 20) this.x = -20;
+                if (this.x < -20) this.x = width + 20;
+            }
         }
 
-        // Initialize particles
+        // Initialize huge amount of particles to simulate depth
         for (let i = 0; i < 150; i++) {
-            particles.push(new Particle());
+            particles.push(new Petal());
         }
 
         function animateCanvas() {
             ctx.clearRect(0, 0, width, height);
-            
-            // Add grid lines faintly
-            ctx.strokeStyle = 'rgba(255,255,255,0.02)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            for(let i=0; i<width; i+=50) { ctx.moveTo(i, 0); ctx.lineTo(i, height); }
-            for(let i=0; i<height; i+=50) { ctx.moveTo(0, i); ctx.lineTo(width, i); }
-            ctx.stroke();
-
             particles.forEach(p => {
                 p.update();
                 p.draw();
             });
-            
             requestAnimationFrame(animateCanvas);
         }
-        
-        // Start canvas animation
         animateCanvas();
 
-        // Prevent default dragging on images
-        document.querySelectorAll('img').forEach(img => {
-            img.addEventListener('dragstart', (e) => e.preventDefault());
+        // 3. Scroll Reveal Logic via Intersection Observer
+        function initAnimations() {
+            const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            reveals.forEach(el => observer.observe(el));
+        }
+
+        // 4. Navbar Background on Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-black/90', 'shadow-lg', 'shadow-neon-pink/10');
+                nav.classList.remove('bg-black/50');
+            } else {
+                nav.classList.add('bg-black/50');
+                nav.classList.remove('bg-black/90', 'shadow-lg', 'shadow-neon-pink/10');
+            }
         });
+
+        // 5. Data Generation for Massive HTML generation
+        // Character Data
+        const characters = [
+            { name: "Kenshin 'The Ghost'", role: "Ronin", img: "https://images.unsplash.com/photo-1542050256-02a8ebdc7381?auto=format&fit=crop&q=80&w=500", element: "Void", color: "text-white", border: "border-white" },
+            { name: "Akira 'Neon'", role: "Cyber-Ninja", img: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&q=80&w=500", element: "Lightning", color: "text-neon-cyan", border: "border-neon-cyan" },
+            { name: "Mei 'Crimson'", role: "Onmyoji", img: "https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&q=80&w=500", element: "Fire", color: "text-neon-pink", border: "border-neon-pink" },
+            { name: "Ryūjin", role: "Dragon Lord", img: "https://images.unsplash.com/photo-1599839619722-39751411ea63?auto=format&fit=crop&q=80&w=500", element: "Earth", color: "text-gold", border: "border-gold" },
+            // Repeat to make the page longer programmatically
+            { name: "Takeshi 'Shadow'", role: "Assassin", img: "https://images.unsplash.com/photo-1563823251942-c20e29202685?auto=format&fit=crop&q=80&w=500", element: "Darkness", color: "text-gray-500", border: "border-gray-500" },
+            { name: "Yuki 'Frost'", role: "Cryomancer", img: "https://images.unsplash.com/photo-1516466723877-e4ec1d736c8a?auto=format&fit=crop&q=80&w=500", element: "Ice", color: "text-blue-300", border: "border-blue-300" },
+            { name: "Zero", role: "Android", img: "https://images.unsplash.com/photo-1535295972055-1c762f4483e5?auto=format&fit=crop&q=80&w=500", element: "Tech", color: "text-green-400", border: "border-green-400" },
+            { name: "Orochi", role: "Demon King", img: "https://images.unsplash.com/photo-1618331835717-801e976710b2?auto=format&fit=crop&q=80&w=500", element: "Chaos", color: "text-red-600", border: "border-red-600" }
+        ];
+
+        const charGrid = document.getElementById('character-grid');
+        characters.forEach((char, index) => {
+            const delay = index * 0.1;
+            charGrid.innerHTML += `
+                <div class="tilt-card group reveal" style="transition-delay: ${delay}s" onmousemove="tiltEffect(event, this)" onmouseleave="resetTilt(this)">
+                    <div class="relative w-full h-[400px] overflow-hidden bg-dark-bg border border-white/10 group-hover:${char.border} transition-colors duration-300">
+                        <img src="${char.img}" alt="${char.name}" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 filter grayscale group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                        
+                        <div class="absolute bottom-0 left-0 w-full p-6 tilt-content">
+                            <span class="text-xs font-oswald tracking-widest ${char.color} block mb-1 uppercase">${char.role}</span>
+                            <h3 class="text-2xl font-cinzel text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-${char.color.replace('text-', '')}">${char.name}</h3>
+                            <div class="w-8 h-1 bg-white/30 group-hover:w-full group-hover:bg-${char.color.replace('text-', '')} transition-all duration-500"></div>
+                            
+                            <!-- Hidden Stats revealed on hover -->
+                            <div class="mt-4 opacity-0 h-0 group-hover:opacity-100 group-hover:h-auto transition-all duration-500 overflow-hidden">
+                                <div class="flex justify-between text-xs text-gray-400 font-jp mb-1"><span>ATK</span><span class="${char.color}">S+</span></div>
+                                <div class="flex justify-between text-xs text-gray-400 font-jp mb-1"><span>DEF</span><span class="text-white">A</span></div>
+                                <div class="flex justify-between text-xs text-gray-400 font-jp"><span>AGI</span><span class="text-white">SS</span></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tech decoration -->
+                        <div class="absolute top-4 right-4 text-xs font-mono text-white/30">ID:${Math.floor(Math.random()*9000)+1000}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // 3D Tilt Effect Library
+        function tiltEffect(event, element) {
+            const rect = element.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -15; // Max 15 deg
+            const rotateY = ((x - centerX) / centerX) * 15;
+            
+            element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+        
+        function resetTilt(element) {
+            element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+        }
+
+        // 6. Generate Massive Gallery
+        const galleryGrid = document.getElementById('masonry-gallery');
+        const searchTerms = ['tokyo neon', 'japanese sword', 'cyberpunk', 'temple japan', 'anime background', 'samurai', 'cherry blossom', 'yokai'];
+        
+        // Generating 16 image slots to make the page extremely long
+        for(let i=0; i<16; i++) {
+            const term = searchTerms[i % searchTerms.length];
+            // Simulate variable heights for masonry
+            const height = Math.floor(Math.random() * 200) + 300; 
+            
+            galleryGrid.innerHTML += `
+                <div class="relative group overflow-hidden break-inside-avoid rounded-sm bg-gray-900 reveal" style="transition-delay: ${(i%4)*0.1}s">
+                    <img src="https://source.unsplash.com/random/800x${height}/?${term.replace(' ', ',')}" alt="${term}" class="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700 filter contrast-125 saturate-50 group-hover:saturate-150">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <span class="text-neon-cyan font-oswald text-sm uppercase tracking-widest translate-y-4 group-hover:translate-y-0 transition-transform duration-300">File_00${i+1}</span>
+                        <h3 class="text-white font-cinzel text-xl capitalize translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">${term}</h3>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 7. Generate Timeline
+        const timelineData = [
+            { year: "2077", title: "THE GREAT FRACTURE", desc: "Tembok dimensi hancur. Langit Tokyo terbakar api hijau, menandai kedatangan Yokai.", color: "text-red-500", align: "left" },
+            { year: "2082", title: "NEO-SHOGUNATE ESTABLISHED", desc: "Sisa-sisa pemerintah bergabung dengan Megacorp, membentuk Shogunate baru untuk bertahan hidup.", color: "text-neon-cyan", align: "right" },
+            { year: "2090", title: "PROJECT: SHINIGAMI", desc: "Manusia pertama berhasil disinkronisasi dengan inti arwah (Soul Core). Pasukan Shinigami lahir.", color: "text-neon-pink", align: "left" },
+            { year: "2105", title: "FALL OF KYOTO", desc: "Kekalahan besar pertama. Jutaan nyawa hilang karena kebangkitan Orochi.", color: "text-gray-500", align: "right" },
+            { year: "2120", title: "CURRENT ERA", desc: "Perang tak berujung. Anda berada di sini. Waktu untuk memilih faksi.", color: "text-gold", align: "left" }
+        ];
+
+        const timelineContainer = document.getElementById('timeline-container');
+        timelineData.forEach((event, index) => {
+            const isLeft = event.align === 'left';
+            timelineContainer.innerHTML += `
+                <div class="relative w-full flex justify-center items-center group reveal">
+                    <!-- Dot -->
+                    <div class="absolute w-4 h-4 bg-black border-2 border-white rounded-full z-10 group-hover:border-neon-pink group-hover:bg-neon-pink transition-colors shadow-[0_0_10px_white]"></div>
+                    
+                    <div class="w-full flex ${isLeft ? 'flex-row' : 'flex-row-reverse'} items-center">
+                        <div class="w-1/2 ${isLeft ? 'pr-12 text-right' : 'pl-12 text-left'}">
+                            <h3 class="text-5xl font-oswald text-white/20 mb-2 group-hover:${event.color} transition-colors">${event.year}</h3>
+                            <h4 class="text-2xl font-cinzel text-white mb-3">${event.title}</h4>
+                            <p class="text-gray-400 font-jp leading-relaxed">${event.desc}</p>
+                        </div>
+                        <div class="w-1/2"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+
+        // ==========================================
+        // 8. AUDIO PLAYER LOGIC
+        // ==========================================
+        const bgmToggle = document.getElementById('bgm-toggle');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const vinylDisc = document.getElementById('vinyl-disc');
+        let isBgmPlaying = false;
+        
+        // Simulate audio object (Browser autoplay policies require user interaction first)
+        const dummyAudio = new Audio(); // Placeholder
+        
+        bgmToggle.addEventListener('click', () => {
+            isBgmPlaying = !isBgmPlaying;
+            if (isBgmPlaying) {
+                playIcon.classList.add('opacity-0');
+                pauseIcon.classList.remove('opacity-0');
+                vinylDisc.classList.remove('vinyl-paused');
+                bgmToggle.classList.add('bg-neon-cyan', 'text-void');
+                bgmToggle.classList.remove('bg-void', 'text-neon-cyan');
+                // dummyAudio.play();
+            } else {
+                playIcon.classList.remove('opacity-0');
+                pauseIcon.classList.add('opacity-0');
+                vinylDisc.classList.add('vinyl-paused');
+                bgmToggle.classList.remove('bg-neon-cyan', 'text-void');
+                bgmToggle.classList.add('bg-void', 'text-neon-cyan');
+                // dummyAudio.pause();
+            }
+        });
+
+        // ==========================================
+        // 9. SYSTEM MODAL LOGIC
+        // ==========================================
+        function showSysModal(title, message) {
+            document.getElementById('sys-modal-title').innerText = title;
+            document.getElementById('sys-modal-message').innerText = message;
+            const modal = document.getElementById('sys-modal');
+            modal.classList.remove('hidden');
+            // Play a digital blip sound conceptually
+        }
+
+        function closeSysModal() {
+            const modal = document.getElementById('sys-modal');
+            modal.classList.add('hidden');
+        }
+
+        // Close modal on outside click
+        document.getElementById('sys-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeSysModal();
+        });
+
+        // Close on Enter key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !document.getElementById('sys-modal').classList.contains('hidden')) {
+                closeSysModal();
+            }
+        });
+
+
+        // ==========================================
+        // 10. INTERACTIVE WORLD MAP LOGIC
+        // ==========================================
+        const regions = [
+            { id: 1, name: "Distrik Shinjuku (Runtuh)", x: 20, y: 30, lore: "Pusat aktivitas pasar gelap dan sarang para ronin tanpa tuan.", status: "Danger" },
+            { id: 2, name: "Menara Megacorp Alpha", x: 50, y: 50, lore: "Pusat kendali ekonomi. Dilindungi ketat oleh robot penjaga.", status: "Secure" },
+            { id: 3, name: "Kuil Asakusa Kuno", x: 80, y: 40, lore: "Satu-satunya area di mana energi spiritual masih murni tanpa polusi mesin.", status: "Mystic" },
+            { id: 4, name: "Pelabuhan Cyber-Yokohama", x: 70, y: 80, lore: "Tempat penyelundupan implan ilegal dan teknologi terlarang.", status: "Contested" },
+            { id: 5, name: "Gurun Kanto Utara", x: 30, y: 70, lore: "Tanah tandus pasca perang ledakan plasma. Penuh monster mutasi.", status: "Wasteland" }
+        ];
+
+        const mapContainerEl = document.getElementById('map-nodes-container');
+        regions.forEach(reg => {
+            let colorStr = reg.status === 'Danger' ? 'text-red-500' : reg.status === 'Secure' ? 'text-neon-cyan' : 'text-gold';
+            
+            mapContainerEl.innerHTML += `
+                <div class="map-node" style="left: ${reg.x}%; top: ${reg.y}%" onclick="showSysModal('TRANSMISI WILAYAH: ${reg.name}', '${reg.lore}')">
+                    <div class="map-tooltip">
+                        <h4 class="font-oswald text-white mb-1 border-b border-white/20 pb-1">${reg.name}</h4>
+                        <p class="text-xs font-jp text-gray-300 mb-2">${reg.lore}</p>
+                        <span class="text-[10px] font-mono ${colorStr}">STATUS: ${reg.status.toUpperCase()}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+
+        // ==========================================
+        // 11. BOSS RAID EVENT LOGIC
+        // ==========================================
+        const maxBossHp = 10000000;
+        let currentBossHp = 10000000;
+        const bossHpFill = document.getElementById('boss-hp-fill');
+        const bossHpText = document.getElementById('boss-hp-text');
+        const hitbox = document.getElementById('boss-hitbox');
+        let autoAtkInterval = null;
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function updateBossHpUI() {
+            const percentage = Math.max(0, (currentBossHp / maxBossHp) * 100);
+            bossHpFill.style.width = `${percentage}%`;
+            bossHpText.innerText = `${formatNumber(Math.max(0, currentBossHp))} / ${formatNumber(maxBossHp)}`;
+            
+            if(currentBossHp <= 0) {
+                showSysModal('BOSS TERKALAHKAN', 'Orochi Prime telah jatuh. Loot epik telah ditambahkan ke arsip.');
+                currentBossHp = maxBossHp; // Reset for demo
+                setTimeout(updateBossHpUI, 2000);
+            }
+        }
+
+        function spawnDamageText(x, y, damage, isCrit = false) {
+            const txt = document.createElement('div');
+            txt.innerText = `-${damage}`;
+            txt.className = `damage-text text-${isCrit ? '4xl text-yellow-400' : '2xl'}`;
+            // Random scatter
+            const scatterX = (Math.random() - 0.5) * 50;
+            txt.style.left = `${x + scatterX}px`;
+            txt.style.top = `${y}px`;
+            
+            hitbox.appendChild(txt);
+            setTimeout(() => txt.remove(), 1000);
+        }
+
+        function attackBoss(e) {
+            // Base hit damage
+            const isCrit = Math.random() > 0.8;
+            const dmg = isCrit ? Math.floor(Math.random() * 50000) + 50000 : Math.floor(Math.random() * 10000) + 5000;
+            
+            currentBossHp -= dmg;
+            updateBossHpUI();
+
+            // Spawn floating text based on click pos or center if triggered by auto
+            let clickX, clickY;
+            if(e) {
+                const rect = hitbox.getBoundingClientRect();
+                clickX = e.clientX - rect.left;
+                clickY = e.clientY - rect.top;
+            } else {
+                clickX = hitbox.offsetWidth / 2;
+                clickY = hitbox.offsetHeight / 2;
+            }
+            
+            spawnDamageText(clickX, clickY, formatNumber(dmg), isCrit);
+            
+            // Screen shake effect on crit
+            if(isCrit) {
+                document.body.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
+                setTimeout(() => document.body.style.transform = 'none', 50);
+            }
+        }
+
+        window.autoAttackBoss = function() {
+            const btn = document.getElementById('auto-atk-btn');
+            if(autoAtkInterval) {
+                clearInterval(autoAtkInterval);
+                autoAtkInterval = null;
+                btn.innerHTML = 'Aktifkan Auto-Attack Protocol <i class="fa-solid fa-crosshairs ml-2"></i>';
+                btn.classList.remove('border-red-500', 'bg-red-900/30', 'shadow-[0_0_20px_red]');
+            } else {
+                autoAtkInterval = setInterval(() => attackBoss(null), 200); // 5 hits per second
+                btn.innerHTML = 'Hentikan Protocol <i class="fa-solid fa-spinner fa-spin ml-2"></i>';
+                btn.classList.add('border-red-500', 'bg-red-900/30', 'shadow-[0_0_20px_red]');
+                showSysModal('PROTOCOL AKTIF', 'Sistem auto-serang drone diaktifkan. Mengkonsumsi energi inti.');
+            }
+        }
+
+
+        // ==========================================
+        // 12. GACHA SIMULATOR LOGIC
+        // ==========================================
+        const gachaDb = [
+            { id: "s1", name: "Kusanagi Blade (Awakened)", rarity: "SSR", type: "Weapon", img: "https://images.unsplash.com/photo-1589634749400-56af59b128bb?auto=format&fit=crop&q=80&w=300" },
+            { id: "s2", name: "Amaterasu Core", rarity: "SSR", type: "Artifact", img: "https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80&w=300" },
+            { id: "s3", name: "Mecha-Dragon Mount", rarity: "SSR", type: "Mount", img: "https://images.unsplash.com/photo-1599839619722-39751411ea63?auto=format&fit=crop&q=80&w=300" },
+            { id: "r1", name: "Plasma Katana", rarity: "SR", type: "Weapon", img: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80&w=300" },
+            { id: "r2", name: "Cyber Ninja Suit", rarity: "SR", type: "Armor", img: "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&q=80&w=300" },
+            { id: "r3", name: "Oni Mask Fragment", rarity: "SR", type: "Material", img: "https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&q=80&w=300" },
+            { id: "n1", name: "Basic Energy Cell", rarity: "R", type: "Consumable", img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=300" },
+            { id: "n2", name: "Rusty Kunai", rarity: "R", type: "Weapon", img: "https://images.unsplash.com/photo-1621619623275-c0d164132890?auto=format&fit=crop&q=80&w=300" },
+            { id: "n3", name: "Data Chip (Corrupted)", rarity: "R", type: "Material", img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=300" }
+        ];
+
+        function getRandomItem() {
+            const roll = Math.random();
+            // Rates: 5% SSR, 25% SR, 70% R
+            let targetRarity = roll < 0.05 ? "SSR" : roll < 0.3 ? "SR" : "R";
+            const pool = gachaDb.filter(item => item.rarity === targetRarity);
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        window.summon = function(times) {
+            const resultsContainer = document.getElementById('gacha-results');
+            resultsContainer.innerHTML = ''; // clear
+            
+            // Screen flash effect
+            const flash = document.createElement('div');
+            flash.className = 'fixed inset-0 bg-white z-[9999] opacity-100 transition-opacity duration-1000 pointer-events-none';
+            document.body.appendChild(flash);
+            setTimeout(() => flash.classList.add('opacity-0'), 50);
+            setTimeout(() => flash.remove(), 1050);
+
+            for(let i=0; i<times; i++) {
+                const item = getRandomItem();
+                let borderClass = item.rarity === "SSR" ? "border-ssr" : item.rarity === "SR" ? "border-sr" : "border-r";
+                let textClass = item.rarity === "SSR" ? "text-gold font-bold shadow-[0_0_10px_gold]" : item.rarity === "SR" ? "text-neon-pink" : "text-neon-cyan";
+                
+                // Create Card Structure
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = 'gacha-scene h-64 md:h-80 w-full cursor-pointer';
+                
+                // Delay flip animation for dramatic effect
+                const delay = i * 150;
+                
+                cardWrapper.innerHTML = `
+                    <div class="gacha-card-inner gacha-card">
+                        <!-- Front (Hidden side initially facing user, before flip) -->
+                        <div class="gacha-card-front">
+                            <i class="fa-solid fa-yin-yang animate-spin opacity-50 text-4xl"></i>
+                        </div>
+                        <!-- Back (The actual result) -->
+                        <div class="gacha-card-back ${borderClass}" style="background-image: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.3)), url('${item.img}')">
+                            <div class="absolute top-2 right-2 px-2 py-1 bg-black/80 border border-white/20 text-xs font-oswald ${textClass}">${item.rarity}</div>
+                            <span class="text-[10px] text-gray-400 font-oswald uppercase tracking-widest">${item.type}</span>
+                            <h4 class="text-white font-cinzel text-lg leading-tight mt-1 text-shadow">${item.name}</h4>
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.appendChild(cardWrapper);
+                
+                // Trigger flip
+                setTimeout(() => {
+                    cardWrapper.querySelector('.gacha-card').classList.add('flipped');
+                }, 300 + delay);
+            }
+            
+            if(times === 10) {
+                setTimeout(() => showSysModal('PEMANGGILAN SELESAI', '10 Item telah ditransfer ke inventaris. Periksa status rarity Anda.'), 2000);
+            }
+        }
+
+        // ==========================================
+        // 13. ARMORY / BLACK MARKET LOGIC
+        // ==========================================
+        const shopItems = [
+            { name: "Void Edge", type: "Katana", price: "450,000", stat: "ATK +999", img: "https://images.unsplash.com/photo-1551244072-5d12893278ab?auto=format&fit=crop&q=80&w=500" },
+            { name: "Neural Link v3.0", type: "Implant", price: "1,200,000", stat: "AGI +50%", img: "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=500" },
+            { name: "Aegis Shield Array", type: "Defense", price: "850,000", stat: "DEF +3000", img: "https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80&w=500" },
+            { name: "Shadow Cloak", type: "Armor", price: "600,000", stat: "STEALTH +80", img: "https://images.unsplash.com/photo-1542050256-02a8ebdc7381?auto=format&fit=crop&q=80&w=500" },
+            { name: "Plasma Shuriken", type: "Throwable", price: "50,000", stat: "CRIT +15%", img: "https://images.unsplash.com/photo-1621619623275-c0d164132890?auto=format&fit=crop&q=80&w=500" },
+            { name: "Yomi Ticket", type: "Special", price: "9,999,999", stat: "REVIVE 1x", img: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&q=80&w=500" }
+        ];
+
+        const shopContainer = document.getElementById('shop-container');
+        shopItems.forEach((item, index) => {
+            shopContainer.innerHTML += `
+                <div class="bg-black border border-white/10 group hover:border-neon-pink transition-all duration-300 reveal" style="transition-delay: ${index * 0.1}s">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 filter sepia">
+                        <div class="absolute top-2 left-2 bg-void/80 px-2 py-1 text-[10px] font-oswald text-gray-400 border border-white/20 uppercase">${item.type}</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-cinzel text-white mb-2 group-hover:text-neon-pink transition-colors">${item.name}</h3>
+                        <div class="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
+                            <span class="font-jp text-sm text-neon-cyan">${item.stat}</span>
+                            <span class="font-mono text-gold flex items-center gap-1">${item.price} <i class="fa-brands fa-ethereum text-xs"></i></span>
+                        </div>
+                        <button onclick="buyItem('${item.name}')" class="w-full py-2 border border-white/20 text-white font-oswald text-sm tracking-widest hover:bg-neon-pink hover:border-neon-pink transition-all flex justify-center items-center gap-2 group-hover:shadow-[0_0_15px_#ff2a6d]">
+                            AKUISISI ITEM <i class="fa-solid fa-cart-shopping"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        window.buyItem = function(itemName) {
+            showSysModal('TRANSAKSI DIPROSES', `Mencoba mengakuisisi ${itemName}. \n\nMenghubungi jaringan Black Market... \nStatus: KREDIT CUKUP. Barang akan dikirim ke inventory.`);
+        };
+
+        // Re-init observer for dynamically added elements
+        setTimeout(initAnimations, 100);
 
     </script>
 </body>
